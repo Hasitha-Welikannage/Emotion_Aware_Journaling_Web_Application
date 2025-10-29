@@ -12,9 +12,5 @@ def create_app():
     migrate.init_app(app,db)
     login_manager.init_app(db)
     bcrypt(app)
-
-    @login_manager.user_loader
-    def load_user(user_id):
-        return None
     
     return app
