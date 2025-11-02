@@ -5,7 +5,28 @@ from ..extentions import db
 from ..utils.response import make_response, make_error
 from .models import User
 
-@user_bp.route('/<int: user_id>', methods=['GET'])
+@user_bp.route('/', methods=['GET'])
+def get_all_users():
+
+    request_path = request.url
+
+    users = User.query.all()
+
+    if users:
+        return make_response(
+        status_code=200,
+        data=[user.to_dict for user in users],  
+        message=f'Users are found sucessfully',
+        path=request_path
+    )
+    else:
+        return make_error(
+            message=f'Can not find any users',
+            status_code= 404,
+            path= request_path
+        )    
+
+@user_bp.route('/<int:user_id>', methods=['GET'])
 def get_user(user_id):
 
     request_path = request.url
@@ -26,7 +47,7 @@ def get_user(user_id):
             path= request_path
         )
 
-@user_bp.route('/<int: user_id>',methods=['POST'])
+@user_bp.route('/<int:user_id>',methods=['POST'])
 def update_user(user_id):
     data = request.get_json()
     request_path = request.url
