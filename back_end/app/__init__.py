@@ -16,6 +16,6 @@ def create_app():
     bcrypt.init_app(app)
 
     app.register_blueprint(user_bp, url_prefix='/users')
-    #app.register_blueprint(auth_bp)
+    app.register_blueprint(auth_bp, url_prefix='/auth')
     
     return app
