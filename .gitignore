@@ -52,3 +52,6 @@ node_modules/
 
 # Optional: built docs
 docs/_build/
+
+#emotion model
+back_end/app/emotion_detect/emotion_model/
