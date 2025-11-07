@@ -52,7 +52,7 @@ def user_login():
             )
         else:
             return make_error(
-                message='Entered password is incorrect.',
+                message='Password is incorrect.',
                 status_code=401,
                 path=request_path
             )

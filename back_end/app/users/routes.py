@@ -6,6 +6,7 @@ from ..utils.response import make_response, make_error
 from .models import User
 
 @user_bp.route('/', methods=['GET'])
+@login_required
 def get_all_users():
 
     request_path = request.url
@@ -27,6 +28,7 @@ def get_all_users():
         )    
 
 @user_bp.route('/<int:user_id>', methods=['GET'])
+@login_required
 def get_user(user_id):
 
     request_path = request.url
@@ -47,7 +49,8 @@ def get_user(user_id):
             path= request_path
         )
 
-@user_bp.route('/<int:user_id>',methods=['POST'])
+@user_bp.route('/<int:user_id>',methods=['PUT'])
+@login_required
 def update_user(user_id):
     data = request.get_json()
     request_path = request.url
@@ -69,6 +72,32 @@ def update_user(user_id):
             path=request_path
         )    
     else:
+        return make_error(
+            message=f'User with the id {user_id} is not found.',
+            status_code= 404,
+            path= request_path
+        )
+
+@user_bp.route('/<int:user_id>', methods=['DELETE'])
+@login_required
+def delete_user(user_id):
+
+    request_path = request.url
+
+    user = User.query.get(user_id)
+
+    if user:
+
+        db.session.delete(user)
+        db.session.commit()
+
+        return make_response(
+            status_code=200, 
+            message=f'User with ID {user_id} deleted successfully.',
+            path=request_path
+        )
+    else:
+
         return make_error(
             message=f'User with the id {user_id} is not found.',
             status_code= 404,
