@@ -1,57 +1,109 @@
+# =====================================
+# 🔹 PYTHON / FLASK BACKEND
+# =====================================
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
 *$py.class
-
-# C extensions
 *.so
 
-# Distribution / packaging
+# Build / distribution
 build/
 dist/
 *.egg-info/
 pip-wheel-metadata/
 
-# Virtualenvs
+# Virtual environments
 venv/
 env/
 .venv/
 ENV/
 env.bak/
+back_end/venv/
+back_end/.venv/
+back_end/env/
 
 # Flask instance / local DB
 instance/
 *.db
 *.sqlite3
 my_database.db
+back_end/instance/
+back_end/*.sqlite3
+back_end/*.db
+back_end/instance/config.py
 
-# Environment files / secrets
+# Flask migrations cache
+back_end/migrations/**/__pycache__/
+
+# Logs & cache
+*.log
+back_end/logs/
+back_end/.cache/
+.coverage
+back_end/.coverage
+htmlcov/
+.pytest_cache/
+back_end/pytest_cache/
+back_end/.tox/
+
+# Environment / secrets
 .env
-.env.* 
+*.env
+.env.*
+.envrc
+back_end/.env
+back_end/*.pem
+back_end/*.key
 
-# IDEs and editors
-.vscode/
-.idea/
-*.iml
+# Emotion model (custom)
+back_end/app/emotion_detect/emotion_model/
 
-# macOS system files
+# =====================================
+# 🔹 FRONTEND (React)
+# =====================================
+front_end/node_modules/
+front_end/coverage/
+front_end/build/
+front_end/dist/
+front_end/.env.local
+front_end/.env.*.local
+front_end/.DS_Store
+
+# =====================================
+# 🔹 DOCKER
+# =====================================
+.docker/
+docker-compose.override.yml
+docker-compose.dev.yml
+data/
+postgres-data/
+volumes/
+tmp/
+
+# =====================================
+# 🔹 MACOS
+# =====================================
 .DS_Store
 .AppleDouble
 .LSOverride
+Icon?
+._*
 
-# Test / coverage
-.coverage
-htmlcov/
-.pytest_cache/
+# =====================================
+# 🔹 IDE / EDITOR FILES
+# =====================================
+.vscode/
+.idea/
+*.iml
+*.swp
+*.swo
+*.bak
+*.tmp
+*.orig
 
-# Logs
-*.log
-
-# Node (if present)
-node_modules/
-
-# Optional: built docs
+# =====================================
+# 🔹 DOCUMENTATION / OTHER
+# =====================================
 docs/_build/
-
-#emotion model
-back_end/app/emotion_detect/emotion_model/
