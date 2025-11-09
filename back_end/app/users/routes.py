@@ -3,7 +3,7 @@ from flask_login import login_required, current_user
 from . import user_bp
 from ..extentions import db
 from ..utils.response import make_response, make_error
-from .models import User
+from ..models import User
 
 @user_bp.route('/', methods=['GET'])
 @login_required

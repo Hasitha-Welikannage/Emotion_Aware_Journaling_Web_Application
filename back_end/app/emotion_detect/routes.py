@@ -1,7 +1,7 @@
 from flask import request
 from . import emotion_bp
 from ..utils.response import make_error, make_response
-from .emotion_model import analyze_emotions
+from .emotion_model_run import analyze_emotions
 
 @emotion_bp.route('/emotions', methods=['POST'])
 def detect_emotions():
