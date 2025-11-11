@@ -16,7 +16,7 @@ def get_all_users():
     if users:
         return make_response(
         status_code=200,
-        data=[user.to_dict for user in users],  
+        data=[user.to_dict() for user in users],  
         message=f'Users are found sucessfully',
         path=request_path
     )
@@ -38,7 +38,7 @@ def get_user(user_id):
     if user:
         return make_response(
         status_code=200,
-        data=user.to_dict,  
+        data=user.to_dict(),  
         message=f'User with id {user_id} found sucessfully',
         path=request_path
     )
@@ -67,7 +67,7 @@ def update_user(user_id):
 
         return make_response(
             status_code=200,
-            data=user.to_dict,  
+            data=user.to_dict(),  
             message='User updated sucessfully',
             path=request_path
         )    

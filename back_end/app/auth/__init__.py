@@ -1,6 +1,6 @@
 from flask import Blueprint
 from ..extentions import login_manager
-from ..users.models import User
+from ..models import User
 
 auth_bp = Blueprint('auth', __name__)
 

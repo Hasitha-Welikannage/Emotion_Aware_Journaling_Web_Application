@@ -3,7 +3,7 @@ from flask_login import login_user, logout_user, login_required, current_user
 from . import auth_bp
 from ..extentions import db
 from ..utils.response import make_response, make_error
-from ..users.models import User
+from ..models import User
 
 @auth_bp.route('/register', methods=['POST'])
 def user_register():
@@ -28,7 +28,7 @@ def user_register():
 
     return make_response(
         status_code=201,
-        data=new_user.to_dict,  
+        data=new_user.to_dict(),  
         message='User registered sucessfully.',
         path=request_path
     )
@@ -72,7 +72,6 @@ def user_logout():
 
     if current_user.is_authenticated:
         logout_user()
-        session.clear()
         return make_response(
             message='User logout sucessfully.',
             status_code=200,
