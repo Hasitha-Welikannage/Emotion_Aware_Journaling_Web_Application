@@ -1,7 +1,7 @@
 from flask import Flask
 from .config import Config
 from .extentions import db, login_manager, migrate, bcrypt
-
+from .utils.error_handlers import registor_error_handlers
 
 
 def create_app():
@@ -13,6 +13,8 @@ def create_app():
     migrate.init_app(app,db)
     login_manager.init_app(app)
     bcrypt.init_app(app)
+
+    registor_error_handlers(app)
 
     from .users import user_bp
     from .auth import auth_bp
