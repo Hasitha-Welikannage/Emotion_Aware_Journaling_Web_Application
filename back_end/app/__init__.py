@@ -14,7 +14,8 @@ def create_app():
     login_manager.init_app(app)
     bcrypt.init_app(app)
 
-    registor_error_handlers(app)
+    login_manager.login_view = None
+    registor_error_handlers(app, login_manager)
 
     from .users import user_bp
     from .auth import auth_bp

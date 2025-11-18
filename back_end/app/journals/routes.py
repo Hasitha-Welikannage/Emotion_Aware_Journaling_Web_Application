@@ -5,7 +5,9 @@ from ..utils.response import make_response, make_error
 from ..extentions import db
 from ..models import JournalEntry, Emotion
 from ..emotion_detect.emotion_model_run import analyze_emotions
+from ..utils.custom_exceptions import NotFoundError
 
+# Get all journal entries for the current user
 @journals_bp.route('/', methods=['GET'])
 @login_required
 def get_journal_entries():
@@ -14,20 +16,19 @@ def get_journal_entries():
     user_id = current_user.id
 
     journal_entries = JournalEntry.query.filter_by(user_id=user_id).all()
-    if journal_entries:
-        return make_response(
+
+    # Check if any journal entries exist for the user
+    if not journal_entries:
+        raise NotFoundError(f'No journal entries found for user with id {user_id}')
+
+    return make_response(
         status_code=200,
         data=[entry.to_dict() for entry in journal_entries],  
         message=f'Journal entries found successfully',
         path=request_path
     )
-    else:
-        return make_error(
-            message=f'No journal entries found',
-            status_code= 404,
-            path= request_path
-        )
 
+# Get a specific journal entry by ID
 @journals_bp.route('/<int:entry_id>', methods=['GET'])
 @login_required
 def get_journal_entry(entry_id):
@@ -37,20 +38,18 @@ def get_journal_entry(entry_id):
 
     journal_entry = JournalEntry.query.filter_by(id=entry_id, user_id=user_id).first()
 
-    if journal_entry:
-        return make_response(
+    # Check if the journal entry exists
+    if not journal_entry:
+        raise NotFoundError(f'Journal entry with id {entry_id} not found.')
+        
+    return make_response(
         status_code=200,
         data=journal_entry.to_dict(),  
         message=f'Journal entry with id {entry_id} found successfully',
         path=request_path
     )
-    else:
-        return make_error(
-            message=f'Journal entry with the id {entry_id} is not found.',
-            status_code= 404,
-            path= request_path
-        )
 
+# Create a new journal entry
 @journals_bp.route('/', methods=['POST'])
 @login_required
 def create_journal_entry():
@@ -94,6 +93,7 @@ def create_journal_entry():
         path=request_path
     )
 
+# Update an existing journal entry
 @journals_bp.route('/<int:entry_id>', methods=['PUT'])
 @login_required
 def update_journal_entry(entry_id):
@@ -105,11 +105,7 @@ def update_journal_entry(entry_id):
     journal_entry = JournalEntry.query.filter_by(id=entry_id, user_id=user_id).first()
 
     if not journal_entry:
-        return make_error(
-            message=f'Journal entry with the id {entry_id} is not found.',
-            status_code=404,
-            path=request_path
-        )
+        raise NotFoundError(f'Journal entry with id {entry_id} not found.')
 
     title = data.get('title')
     content = data.get('content')
@@ -139,6 +135,7 @@ def update_journal_entry(entry_id):
         path=request_path
     )
 
+# Delete a journal entry
 @journals_bp.route('/<int:entry_id>', methods=['DELETE'])
 @login_required
 def delete_journal_entry(entry_id):  
@@ -149,18 +146,13 @@ def delete_journal_entry(entry_id):
     journal_entry = JournalEntry.query.filter_by(id=entry_id, user_id=user_id).first()
 
     if not journal_entry:
-        return make_error(
-            message=f'Journal entry with the id {entry_id} is not found.',
-            status_code=404,
-            path=request_path
-        )
+        raise NotFoundError(f'Journal entry with id {entry_id} not found.')
 
     db.session.delete(journal_entry)
     db.session.commit()
 
     return make_response(
         status_code=200,
-        data={},
         message='Journal entry deleted successfully.',
         path=request_path
     )

@@ -41,6 +41,10 @@ class MethodNotAllowedError(AppError):
     status_code = 405
     message = 'Method not allowed.'
 
+class ConflictError(AppError):
+    status_code = 409
+    message = 'Conflict occurred.'
+
 
 
 
