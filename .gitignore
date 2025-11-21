@@ -37,8 +37,7 @@ back_end/instance/config.py
 # Flask migrations cache
 back_end/migrations/**/__pycache__/
 
-# Logs & cache
-*.log
+# Logs & cache (Backend specific)
 back_end/logs/
 back_end/.cache/
 .coverage
@@ -58,18 +57,51 @@ back_end/*.pem
 back_end/*.key
 
 # Emotion model (custom)
-back_end/app/emotion_detect/emotion_model/
+backend/app/emotion_detect/emotion_model/
 
 # =====================================
 # 🔹 FRONTEND (React)
 # =====================================
+
+# Node dependencies and build output (General)
+node_modules/
+dist/
+dist-ssr/
+build/
+coverage/
+
+# Node dependencies and build output (Inside front_end)
 front_end/node_modules/
 front_end/coverage/
 front_end/build/
 front_end/dist/
+front_end/.DS_Store
+
+# Local Environment files
+*.local
 front_end/.env.local
 front_end/.env.*.local
-front_end/.DS_Store
+
+# React-specific files/directories to ignore
+# Temporary files from React/JS tooling
+.parcel-cache
+.cache
+/tmp
+/temp
+pnpm-lock.yaml
+yarn.lock
+package-lock.json
+
+# =====================================
+# 🔹 LOGS (General for Node/JS/App)
+# =====================================
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
 
 # =====================================
 # 🔹 DOCKER
@@ -92,9 +124,13 @@ Icon?
 ._*
 
 # =====================================
-# 🔹 IDE / EDITOR FILES
+# 🔹 IDE / EDITOR FILES (Consolidated)
 # =====================================
+# VS Code
 .vscode/
+!.vscode/extensions.json # Keep this file
+
+# Other IDEs/Editors
 .idea/
 *.iml
 *.swp
@@ -102,6 +138,11 @@ Icon?
 *.bak
 *.tmp
 *.orig
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
 
 # =====================================
 # 🔹 DOCUMENTATION / OTHER
