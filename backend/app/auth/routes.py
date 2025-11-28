@@ -58,6 +58,18 @@ def user_login():
         path=request_path
     )
 
+# Get Current User
+@auth_bp.route('/current_user', methods=['GET'])
+@login_required
+def get_current_user():
+    request_path = request.url
+    return make_response(
+        message='Current user retrieved successfully.',
+        data=current_user.to_dict(),
+        status_code=200,
+        path=request_path
+    )
+
 # User Logout Route    
 @auth_bp.route("/logout", methods=["POST"])
 @login_required
