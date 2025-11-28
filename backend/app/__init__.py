@@ -1,6 +1,6 @@
 from flask import Flask
 from .config import Config
-from .extentions import db, login_manager, migrate, bcrypt
+from .extentions import db, login_manager, migrate, bcrypt, cors
 from .utils.error_handlers import registor_error_handlers
 
 
@@ -13,6 +13,7 @@ def create_app():
     migrate.init_app(app,db)
     login_manager.init_app(app)
     bcrypt.init_app(app)
+    cors.init_app(app, origins=["http://localhost:3000"])
 
     login_manager.login_view = None
     registor_error_handlers(app, login_manager)

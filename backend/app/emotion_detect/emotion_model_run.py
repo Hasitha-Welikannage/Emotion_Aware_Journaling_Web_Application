@@ -2,12 +2,12 @@ import torch
 from transformers import AutoTokenizer, AutoModelForSequenceClassification
 import numpy as np
 
-MODEL_PATH = "/Users/hasithawelikannage/Documents/GitHub/Emotion_Aware_Journaling_Web_Application/back_end/app/emotion_detect/emotion_model"
+MODEL_PATH = "/Users/hasithawelikannage/Documents/GitHub/Emotion_Aware_Journaling_Web_Application/backend/app/emotion_detect/emotion_model"
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 print("Loading model...")
-tokenizer = AutoTokenizer.from_pretrained(MODEL_PATH)
-model = AutoModelForSequenceClassification.from_pretrained(MODEL_PATH)
+tokenizer = AutoTokenizer.from_pretrained(MODEL_PATH, local_files_only=True)
+model = AutoModelForSequenceClassification.from_pretrained(MODEL_PATH, local_files_only=True)
 model.to(device)
 model.eval()
 
