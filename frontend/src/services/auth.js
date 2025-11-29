@@ -19,13 +19,12 @@ export const login = async (credentials) => {
   }
 };
 
-export const logout = async (token) => {
+export const logout = async () => {
   try {
     const response = await fetch(`${API_BASE_URL}/auth/logout`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify({}),
     });
@@ -58,13 +57,12 @@ export const register = async (userData) => {
   }
 };
 
-export const getCurrentUser = async (token) => {
+export const getCurrentUser = async () => {
   try {
     const response = await fetch(`${API_BASE_URL}/auth/user`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
       },
     });
     if (!response.ok) {
