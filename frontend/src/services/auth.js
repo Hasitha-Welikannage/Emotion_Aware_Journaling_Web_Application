@@ -9,13 +9,9 @@ export const login = async (credentials) => {
       },
       body: JSON.stringify(credentials),
     });
-    if (!response.ok) {
-      throw new Error("Network response was not ok");
-    }
     return await response.json();
   } catch (error) {
     console.error("Error during login:", error);
-    throw error;
   }
 };
 
@@ -28,13 +24,9 @@ export const logout = async () => {
       },
       body: JSON.stringify({}),
     });
-    if (!response.ok) {
-      throw new Error("Network response was not ok");
-    }
     return await response.json();
   } catch (error) {
     console.error("Error during logout:", error);
-    throw error;
   }
 };
 
@@ -47,30 +39,22 @@ export const register = async (userData) => {
       },
       body: JSON.stringify(userData),
     });
-    if (!response.ok) {
-      throw new Error("Network response was not ok");
-    }
     return await response.json();
   } catch (error) {
     console.error("Error during registration:", error);
-    throw error;
   }
 };
 
 export const getCurrentUser = async () => {
   try {
-    const response = await fetch(`${API_BASE_URL}/auth/user`, {
+    const response = await fetch(`${API_BASE_URL}/auth/current_user`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
       },
     });
-    if (!response.ok) {
-      throw new Error("Network response was not ok");
-    }
     return await response.json();
   } catch (error) {
     console.error("Error fetching current user:", error);
-    throw error;
   }
 };
