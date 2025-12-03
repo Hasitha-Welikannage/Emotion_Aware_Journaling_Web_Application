@@ -1,37 +1,34 @@
-import EmotionBadge from '../components/EmotionBadge.jsx';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-
-// --- Mock Data (Simulating backend response) ---
-const recentEntries = [
-  {
-    id: 1,
-    title: "Morning Reflections",
-    date: "Oct 24, 2025", // Future date for your app context
-    preview: "The sun came through the window differently today. It felt like a fresh start after a long week...",
-    emotion: "Joy",
-    score: 88
-  },
-  {
-    id: 2,
-    title: "Meeting Anxiety",
-    date: "Oct 23, 2025",
-    preview: "I stuttered during the presentation. I feel like everyone noticed my shaking hands...",
-    emotion: "Fear",
-    score: 72
-  },
-  {
-    id: 3,
-    title: "A Quiet Walk",
-    date: "Oct 21, 2025",
-    preview: "Walking through the park helped clear my mind. The noise of the city faded away...",
-    emotion: "Neutral",
-    score: 95
-  }
-];
+import { getJournalEntries } from '../services/journal.js';
+import EntryCard from '../components/EntryCard.jsx';
 
 // --- Main Home Component ---
 function Home() {
+
+  const [recentEntries, setRecentEntries] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchEntries = async () => {
+      try {
+        const response = await getJournalEntries();
+        console.log('Fetched journal entries:', response);
+        if (response.success) {
+          setRecentEntries(response.data.slice(0, 3)); // Get the 3 most recent entries
+        } else {
+          setError(response.message);
+        }
+      } catch (err) {
+        setError('Failed to load journal entries.');
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchEntries();
+  }, []);
 
   return (
     <section className="bg-white lg:py-8 py-6">
@@ -73,38 +70,10 @@ function Home() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {recentEntries.map((entry) => (
-              <div 
+              <EntryCard 
                 key={entry.id} 
-                className="group bg-white rounded-xl shadow-sm border border-orange-100 hover:shadow-md hover:border-orange-300 transition-all duration-200 flex flex-col h-full hover:cursor-pointer"
-              >
-                {/* Card Content */}
-                <div className="p-5 flex-1">
-                  <div className="flex justify-between items-start mb-3">
-                    <span className="text-xs font-semibold text-gray-400 uppercase tracking-wider">{entry.date}</span>
-                    <EmotionBadge emotion={entry.emotion} score={entry.score} />
-                  </div>
-                  
-                  <h4 className="text-lg font-bold text-gray-800 mb-2 group-hover:text-orange-600 transition-colors">
-                    {entry.title}
-                  </h4>
-                  {/* line-clamp-3 automatically truncates text after 3 lines */}
-                  <p className="text-gray-600 text-sm line-clamp-3">
-                    {entry.preview}
-                  </p>
-                </div>
-
-                {/* Card Footer */}
-                <div className="bg-orange-50/50 px-5 py-3 border-t border-orange-100 flex justify-between items-center rounded-b-xl">
-                  <span className="text-xs text-orange-800 font-medium opacity-80">
-                    Confidence: {entry.score}%
-                  </span>
-                  <button className="text-gray-400 hover:text-orange-600 transition-colors">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                    </svg>
-                  </button>
-                </div>
-              </div>
+                entry={entry} 
+              />
             ))}
             
             {/* "Add New" Placeholder Card (Optional visual cue) */}
