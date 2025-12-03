@@ -45,6 +45,7 @@ def get_user(user_id):
         path=request_path
     )
 
+# Update a specific user by ID
 @user_bp.route('/<int:user_id>',methods=['PUT'])
 @login_required
 def update_user(user_id):
@@ -70,6 +71,7 @@ def update_user(user_id):
         path=request_path
     )    
 
+# Delete a specific user by ID
 @user_bp.route('/<int:user_id>', methods=['DELETE'])
 @login_required
 def delete_user(user_id):

@@ -1,5 +1,27 @@
 const API_BASE_URL = "http://127.0.0.1:5000";
 
+export const getJournalEntries = async () => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/journals`, {
+      method: "GET",
+    });
+    return await response.json();
+  } catch (error) {
+    console.error("Error fetching journal entries:", error);
+  }
+};
+
+export const getJournalEntryById = async (entryId) => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/journals/${entryId}`, {
+      method: "GET",
+    });
+    return await response.json();
+  } catch (error) {
+    console.error("Error fetching journal entry by ID:", error);
+  }
+};
+
 export const createJournalEntry = async (entryData) => {
   try {
     const response = await fetch(`${API_BASE_URL}/journals`, {
@@ -12,17 +34,6 @@ export const createJournalEntry = async (entryData) => {
     return await response.json();
   } catch (error) {
     console.error("Error creating journal entry:", error);
-  }
-};
-
-export const getJournalEntries = async () => {
-  try {
-    const response = await fetch(`${API_BASE_URL}/journals`, {
-      method: "GET",
-    });
-    return await response.json();
-  } catch (error) {
-    console.error("Error fetching journal entries:", error);
   }
 };
 
