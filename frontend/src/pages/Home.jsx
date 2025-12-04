@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getJournalEntries } from '../services/journal.js';
 import EntryCard from '../components/EntryCard.jsx';
+import { useAuth } from '../auth/AuthContext.jsx';
 
 // --- Main Home Component ---
 function Home() {
@@ -10,6 +11,7 @@ function Home() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
+  const { user } = useAuth();
 
   useEffect(() => {
     const fetchEntries = async () => {

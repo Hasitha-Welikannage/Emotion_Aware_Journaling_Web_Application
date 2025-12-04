@@ -1,9 +1,11 @@
-const API_BASE_URL = "http://127.0.0.1:5000";
+// Use Vite dev server proxy during development so requests are same-origin
+const API_BASE_URL = "/api";
 
-export const login = async (credentials) => {
+export const loginUser = async (credentials) => {
   try {
     const response = await fetch(`${API_BASE_URL}/auth/login`, {
       method: "POST",
+      credentials: "include",
       headers: {
         "Content-Type": "application/json",
       },
@@ -15,10 +17,11 @@ export const login = async (credentials) => {
   }
 };
 
-export const logout = async () => {
+export const logoutUser = async () => {
   try {
     const response = await fetch(`${API_BASE_URL}/auth/logout`, {
       method: "POST",
+      credentials: "include",
       headers: {
         "Content-Type": "application/json",
       },
@@ -30,10 +33,11 @@ export const logout = async () => {
   }
 };
 
-export const register = async (userData) => {
+export const registerUser = async (userData) => {
   try {
     const response = await fetch(`${API_BASE_URL}/auth/register`, {
       method: "POST",
+      credentials: "include",
       headers: {
         "Content-Type": "application/json",
       },
@@ -46,15 +50,9 @@ export const register = async (userData) => {
 };
 
 export const getCurrentUser = async () => {
-  try {
-    const response = await fetch(`${API_BASE_URL}/auth/current_user`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-    return await response.json();
-  } catch (error) {
-    console.error("Error fetching current user:", error);
-  }
+  const response = await fetch(`${API_BASE_URL}/auth/current_user`, {
+    method: "GET",
+    credentials: "include",
+  });
+  return await response.json();
 };

@@ -1,7 +1,10 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { logoutUser } from "../services/auth";
 
 function Navbar() {
   const [open, setOpen] = useState(false);
+  const navigate = useNavigate();
 
   const navLists = [
     { name: "Home", href: "/app" },
@@ -22,7 +25,7 @@ function Navbar() {
           </div>
 
           {/* Desktop links */}
-          <div className="hidden md:flex space-x-6">
+          <div className="hidden md:flex items-center space-x-6">
             {navLists.map((item) => (
               <a
                 key={item.name}
@@ -32,6 +35,20 @@ function Navbar() {
                 {item.name}
               </a>
             ))}
+            <button
+              onClick={async () => {
+                try {
+                  await logoutUser();
+                } catch (err) {
+                  /* ignore */
+                }
+                // navigate to login page after logout
+                navigate("/login");
+              }}
+              className="text-sm font-medium text-orange-600 hover:text-orange-800"
+            >
+              Logout
+            </button>
           </div>
 
           {/* Mobile toggle */}
@@ -90,6 +107,19 @@ function Navbar() {
               {item.name}
             </a>
           ))}
+          <button
+            onClick={async () => {
+              try {
+                await logoutUser();
+              } catch (err) {
+                /* ignore */
+              }
+              navigate("/login");
+            }}
+            className="block py-2 text-orange-700 hover:text-orange-500 text-left"
+          >
+            Logout
+          </button>
         </div>
       )}
     </nav>

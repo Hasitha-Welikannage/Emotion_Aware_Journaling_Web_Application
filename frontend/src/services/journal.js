@@ -1,16 +1,20 @@
-const API_BASE_URL = "http://127.0.0.1:5000";
+// Use Vite dev server proxy during development so requests are same-origin
+const API_BASE_URL = "/api";
 
 export const getJournalEntries = async () => {
-  const response = await fetch(`${API_BASE_URL}/journals`, {
+  const response = await fetch(`${API_BASE_URL}/journals/`, {
     method: "GET",
+    credentials: "include",
   });
+  //console.log("Journal entries response:", await response.json());
   return await response.json();
 };
 
 export const getJournalEntryById = async (entryId) => {
   try {
-    const response = await fetch(`${API_BASE_URL}/journals/${entryId}`, {
+    const response = await fetch(`${API_BASE_URL}/journals/${entryId}/`, {
       method: "GET",
+      credentials: "include",
     });
     return await response.json();
   } catch (error) {
@@ -20,8 +24,9 @@ export const getJournalEntryById = async (entryId) => {
 
 export const createJournalEntry = async (entryData) => {
   try {
-    const response = await fetch(`${API_BASE_URL}/journals`, {
+    const response = await fetch(`${API_BASE_URL}/journals/`, {
       method: "POST",
+      credentials: "include",
       headers: {
         "Content-Type": "application/json",
       },
@@ -35,8 +40,9 @@ export const createJournalEntry = async (entryData) => {
 
 export const updateJournalEntry = async (entryId, updatedData) => {
   try {
-    const response = await fetch(`${API_BASE_URL}/journals/${entryId}`, {
+    const response = await fetch(`${API_BASE_URL}/journals/${entryId}/`, {
       method: "PUT",
+      credentials: "include",
       headers: {
         "Content-Type": "application/json",
       },
@@ -50,8 +56,9 @@ export const updateJournalEntry = async (entryId, updatedData) => {
 
 export const deleteJournalEntry = async (entryId) => {
   try {
-    const response = await fetch(`${API_BASE_URL}/journals/${entryId}`, {
+    const response = await fetch(`${API_BASE_URL}/journals/${entryId}/`, {
       method: "DELETE",
+      credentials: "include",
     });
     return await response.json();
   } catch (error) {
