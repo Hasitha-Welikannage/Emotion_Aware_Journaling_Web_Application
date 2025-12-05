@@ -1,16 +1,25 @@
-from flask import request,session
+from flask import request
 from flask_login import login_user, logout_user, login_required, current_user
 from . import auth_bp
 from ..extentions import db
 from ..utils.response import make_response, make_error
 from ..models import User
-from ..utils.custom_exceptions import ConflictError, NotFoundError, UnauthorizedError
+from ..utils.custom_exceptions import ConflictError, NotFoundError, UnauthorizedError, BadRequestError
 
 # User Registration Route
 @auth_bp.route('/register', methods=['POST'])
 def user_register():
     data = request.get_json()
     request_path = request.url
+
+    if not data.get('first_name'):
+        raise BadRequestError(message="First name is required.", path=request_path)
+    if not data.get('last_name'):
+        raise BadRequestError(message="Last name is required.", path=request_path)
+    if not data.get('email'):
+        raise BadRequestError(message="Email is required.", path=request_path)
+    if not data.get('password'):
+        raise BadRequestError(message="Password is required.", path=request_path)
 
     # Check if user with the same email already exists
     if User.query.filter_by(email=data.get('email')).first():
@@ -39,6 +48,11 @@ def user_login():
     
     data = request.get_json()
     request_path = request.url
+
+    if not data.get('email'):
+        raise BadRequestError(message="Email is required.", path=request_path)
+    if not data.get('password'):
+        raise BadRequestError(message="Password is required.", path=request_path)
 
     user = User.query.filter_by(email=data.get('email')).first()
 
