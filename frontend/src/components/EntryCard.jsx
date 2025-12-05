@@ -1,8 +1,12 @@
 import EmotionBadge from "./EmotionBadge";
+import { useNavigate } from "react-router-dom";
 
 function EntryCard({ entry }) {
+
+  const navigate = useNavigate();
+
   return (
-    <div className="group bg-white rounded-xl shadow-md hover:shadow-lg border border-orange-100 hover:border-orange-300 transition-all duration-200 cursor-pointer p-5 flex flex-col h-full">
+    <div className="group bg-white rounded-lg shadow-md hover:shadow-lg border border-orange-100 hover:border-orange-300 transition-all duration-200 p-5 flex flex-col h-full">
       {/* Top Row: Date & Emotion */}
       <div className="flex justify-between items-start mb-3">
         <span className="text-xs font-semibold text-gray-400 uppercase tracking-wider">
@@ -27,7 +31,9 @@ function EntryCard({ entry }) {
         <span className="text-xs font-medium text-orange-800 opacity-90">
           Top Score: {entry.emotions[0].confidence}%
         </span>
-        <button className="flex items-center gap-1 text-sm text-orange-600 hover:text-orange-800 transition-colors font-medium">
+        <button 
+        onClick={() => navigate(`/app/entry/${entry.id}`)}
+        className="flex items-center gap-1 text-sm text-orange-600 hover:text-orange-800 transition-colors font-medium cursor-pointer">
           View Details
           <svg
             xmlns="http://www.w3.org/2000/svg"

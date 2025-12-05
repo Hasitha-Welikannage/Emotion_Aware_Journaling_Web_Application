@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { logoutUser } from "../services/auth";
 
 function Navbar() {
@@ -27,13 +27,13 @@ function Navbar() {
           {/* Desktop links */}
           <div className="hidden md:flex items-center space-x-6">
             {navLists.map((item) => (
-              <a
+              <Link
                 key={item.name}
-                href={item.href}
+                to={item.href}
                 className="text-orange-700 hover:text-orange-500"
               >
                 {item.name}
-              </a>
+              </Link>
             ))}
             <button
               onClick={async () => {
@@ -45,7 +45,7 @@ function Navbar() {
                 // navigate to login page after logout
                 navigate("/login");
               }}
-              className="text-sm font-medium text-orange-600 hover:text-orange-800"
+              className="text-sm font-medium px-4 py-2 rounded-sm bg-orange-400 text-white hover:bg-orange-600 cursor-pointer"
             >
               Logout
             </button>
@@ -99,13 +99,13 @@ function Navbar() {
       {open && (
         <div className="md:hidden px-4 pb-4 bg-orange-50 transition-all">
           {navLists.map((item) => (
-            <a
+            <Link
               key={item.name}
-              href={item.href}
-              className="block py-2 text-orange-700 hover:text-orange-500"
+              to={item.href}
+              className="block text-center py-2 text-orange-700 hover:text-orange-500"
             >
               {item.name}
-            </a>
+            </Link>
           ))}
           <button
             onClick={async () => {
@@ -116,7 +116,7 @@ function Navbar() {
               }
               navigate("/login");
             }}
-            className="block py-2 text-orange-700 hover:text-orange-500 text-left"
+            className="block text-sm font-medium px-4 py-2 rounded-sm bg-orange-400 text-white hover:bg-orange-600 cursor-pointer w-full text-center mt-2"
           >
             Logout
           </button>
