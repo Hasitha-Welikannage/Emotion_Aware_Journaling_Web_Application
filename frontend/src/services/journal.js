@@ -12,7 +12,7 @@ export const getJournalEntries = async () => {
 
 export const getJournalEntryById = async (entryId) => {
   try {
-    const response = await fetch(`${API_BASE_URL}/journals/${entryId}/`, {
+    const response = await fetch(`${API_BASE_URL}/journals/${entryId}`, {
       method: "GET",
       credentials: "include",
     });

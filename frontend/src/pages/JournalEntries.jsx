@@ -14,14 +14,14 @@ function JournalEntries() {
     const fetchEntries = async () => {
       try {
         const response = await getJournalEntries();
-        console.log('Fetched journal entries:', response);
+        console.log("Fetched journal entries:", response);
         if (response.success) {
-          setEntries(response.data); // Get the 3 most recent entries
+          setEntries(response.data);
         } else {
           setError(response.message);
         }
       } catch (err) {
-        setError('Failed to load journal entries.');
+        setError("Failed to load journal entries.");
       } finally {
         setLoading(false);
       }
@@ -29,10 +29,12 @@ function JournalEntries() {
     fetchEntries();
   }, []);
 
-
   // Filtering Logic (simplified)
   const filteredEntries = entries
-    .filter((entry) => filter === "All" || entry.emotions[0].name === filter.toLowerCase())
+    .filter(
+      (entry) =>
+        filter === "All" || entry.emotions[0].name === filter.toLowerCase()
+    )
     .filter(
       (entry) =>
         entry.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -103,24 +105,22 @@ function JournalEntries() {
 
         {/* Journal Entries Grid/List */}
         {/* CHANGED: grid-cols-1 on mobile, lg:grid-cols-3 for desktop view */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredEntries.length > 0 ? (
-            filteredEntries.map((entry) => (
-              // Individual Entry Card
+        {filteredEntries.length === 0 ? (
+          <div className="flex flex-col items-center justify-center min-h-[50vh] text-gray-500 bg-white rounded-xl shadow-sm border border-orange-100">
+            <p className="text-lg font-medium">
+              No journal entries match your criteria.
+            </p>
+            <p className="mt-2 text-sm">
+              Clear the search or try a different emotion filter.
+            </p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {filteredEntries.map((entry) => (
               <EntryCard key={entry.id} entry={entry} />
-            ))
-          ) : (
-            // No results state
-            <div className="lg:col-span-3 text-center py-12 text-gray-500 bg-white rounded-xl shadow-sm border border-orange-100">
-              <p className="text-lg font-medium">
-                No journal entries match your criteria.
-              </p>
-              <p className="mt-2 text-sm">
-                Clear the search or try a different emotion filter.
-              </p>
-            </div>
-          )}
-        </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );

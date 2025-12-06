@@ -44,18 +44,13 @@ export function AuthProvider({ children }) {
   async function login(credentials) {
     setLoading(true);
     const response = await loginUser(credentials);
-
     if (response.success) {
       setUser(response.data);
-      console.log("Logged in user:", response.data);
-      setError(null);
     } else {
       setUser(null);
-      setError(response.error || "Login failed");
     }
-
     setLoading(false);
-    return response.success;
+    return response;
   }
 
   // REGISTER
