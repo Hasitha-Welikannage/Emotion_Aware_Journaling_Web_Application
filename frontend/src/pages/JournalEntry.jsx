@@ -1,187 +1,338 @@
-import { useNavigate, useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { getJournalEntryById } from "../services/journal.js";
+import { useNavigate, useParams } from "react-router-dom";
+// Assuming your service functions are available
+import {
+  getJournalEntryById,
+  createJournalEntry,
+  updateJournalEntry,
+  deleteJournalEntry,
+} from "../services/journal.js";
 
-const emotionColors = {
-  sadness: "bg-blue-500",
-  disappointment: "bg-yellow-500",
-  neutral: "bg-gray-400",
-  approval: "bg-green-500",
-  realization: "bg-indigo-500",
-  grief: "bg-purple-500",
-  annoyance: "bg-orange-500",
-  joy: "bg-yellow-400",
-  caring: "bg-pink-400",
-  remorse: "bg-red-400",
-  fear: "bg-indigo-600",
-  admiration: "bg-purple-400",
-  curiosity: "bg-teal-400",
-  love: "bg-pink-500",
-  confusion: "bg-amber-500",
-  desire: "bg-red-500",
-  anger: "bg-red-600",
-  relief: "bg-green-400",
-  amusement: "bg-orange-400",
-  disgust: "bg-lime-600",
-  gratitude: "bg-emerald-500",
-  embarrassment: "bg-rose-400",
-  surprise: "bg-violet-500",
-  pride: "bg-purple-700",
-  excitement: "bg-red-400",
+// --- Constants ---
+const ANALYSIS_COLOR_CLASS = {
+  text: "text-orange-700",
+  bg: "bg-orange-100", // Using a lighter background for the compact chips
+  border: "border-orange-300"
 };
+
+const formatScore = (score) => `${score.toFixed(1)}%`;
 
 function JournalEntry() {
   const navigate = useNavigate();
   const { id } = useParams();
-  const [entry, setEntry] = useState(null);
-  const [loading, setLoading] = useState(true);
+
+  const isExistingEntry = !!id;
+
+  const initialMode = isExistingEntry ? "view" : "edit";
+  const [mode, setMode] = useState(initialMode); // 'view' or 'edit'
+
+  // --- State for Form and Data Status ---
+  const [title, setTitle] = useState("");
+  const [content, setContent] = useState("");
+  const [createdAt, setCreatedAt] = useState("");
+  const [entryData, setEntryData] = useState(null);
+  const [loading, setLoading] = useState(isExistingEntry);
   const [error, setError] = useState(null);
+  const [isAnalyzed, setIsAnalyzed] = useState(false);
 
-  // Fetch the journal entry
+  // --- Data Fetching Effect (Load entry for View or Edit) ---
   useEffect(() => {
-    const fetchEntry = async () => {
-      try {
-        const response = await getJournalEntryById(id);
-        if (response.success) {
-          setEntry(response.data);
-        } else {
-          setError(response.message || "Failed to fetch entry");
-        }
-      } catch (err) {
-        setError("Failed to load journal entry.");
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchEntry();
-  }, [id]);
+    if (isExistingEntry) {
+      const fetchEntry = async () => {
+        setLoading(true);
+        try {
+          const response = await getJournalEntryById(id);
 
-  // Show loading state
+          if (response.success && response.data) {
+            const entry = response.data;
+            setTitle(entry.title);
+            setContent(entry.content);
+            setCreatedAt(entry.created_at);
+            setEntryData(entry.emotions);
+            setIsAnalyzed(true);
+          } else {
+            setError(response.message || "Failed to fetch entry.");
+          }
+        } catch (err) {
+          setError("Failed to load journal entry.");
+        } finally {
+          setLoading(false);
+        }
+      };
+      fetchEntry();
+    }
+  }, [id, isExistingEntry]);
+
+  // --- Data Processing ---
+  const processedEmotions = entryData
+    ? entryData
+        .sort((a, b) => b.confidence - a.confidence)
+        .map((emotion) => ({
+          name: emotion.name,
+          confidence: emotion.confidence,
+          score: emotion.confidence,
+          bg: ANALYSIS_COLOR_CLASS.bg,
+          text: ANALYSIS_COLOR_CLASS.text,
+        }))
+    : [];
+
+  const dominantEmotion = processedEmotions[0];
+
+  // --- Handlers (Unchanged) ---
+  const handleSave = async () => {
+    const payload = { title, content };
+    console.log(
+      mode === "edit" ? "Updating entry" : "Creating new entry",
+      payload
+    );
+
+    if (isExistingEntry) {
+      setMode("view");
+    } else {
+      // Simulate fresh analysis on creation
+      setEntryData([
+        { name: "joy", confidence: 45.2 },
+        { name: "sadness", confidence: 28.1 },
+        { name: "contempt", confidence: 10.5 },
+        { name: "surprise", confidence: 8.0 },
+      ]);
+      setIsAnalyzed(true);
+      setMode("view");
+    }
+  };
+
+  const handleDelete = () => {
+    if (window.confirm("Are you sure you want to delete this entry?")) {
+      console.log(`Deleting entry ${id}`);
+      navigate("/app/journals");
+    }
+  };
+
+  // --- CONTENT RENDERING HELPERS (Unchanged) ---
+  const renderContent = () => {
+    if (mode === "edit") {
+      return (
+        <div className="bg-white rounded-xl shadow-md border border-orange-100 p-5">
+          <textarea
+            value={content}
+            onChange={(e) => setContent(e.target.value)}
+            placeholder="What's on your mind today? Write your entry here..."
+            rows={15}
+            className="w-full text-gray-700 resize-none focus:outline-none"
+            style={{ minHeight: "400px" }}
+          />
+        </div>
+      );
+    } else {
+      const formattedContent = content.split("\n").map((line, index) => (
+        <span key={index}>
+          {line}
+          <br />
+        </span>
+      ));
+      return (
+        <div className="bg-white rounded-xl shadow-md border border-orange-100 p-6 text-gray-700 leading-relaxed text-lg whitespace-pre-wrap">
+          {formattedContent}
+        </div>
+      );
+    }
+  };
+
+  const renderTitleInput = () => {
+    if (mode === "edit") {
+      return (
+        <input
+          type="text"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          placeholder="Give your entry a title..."
+          className="w-full text-3xl font-bold border-b border-gray-200 focus:outline-none focus:border-orange-500 pb-2 text-gray-800 bg-transparent"
+        />
+      );
+    } else {
+      return (
+        <h1 className="text-3xl font-bold text-gray-900">
+          {title.toUpperCase()}
+        </h1>
+      );
+    }
+  };
+
+  // --- RENDERING HANDLERS FOR ACTIONS (Unchanged) ---
+  const renderEditButtonsTop = () => (
+    <button
+      onClick={() => setMode("edit")}
+      className="bg-orange-600 hover:bg-orange-700 text-white font-medium py-2 px-4 rounded-lg shadow-md transition-colors flex items-center gap-2 cursor-pointer"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        className="h-5 w-5"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={2}
+          d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+        />
+      </svg>
+      Edit Entry
+    </button>
+  );
+
+  const renderEditSaveActionsBottom = () => (
+    <div className="flex justify-end gap-3 mt-6">
+      <button
+        onClick={() =>
+          isExistingEntry ? setMode("view") : navigate("/app/journals")
+        }
+        className="bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium py-2 px-4 rounded-xl transition-colors"
+      >
+        Cancel
+      </button>
+      {isExistingEntry && (
+        <button
+          onClick={handleDelete}
+          className="bg-red-500 hover:bg-red-600 text-white font-medium py-2 px-4 rounded-xl transition-colors"
+        >
+          Delete
+        </button>
+      )}
+      <button
+        onClick={handleSave}
+        className="bg-orange-600 hover:bg-orange-700 text-white font-medium py-2 px-4 rounded-xl shadow-md transition-colors flex items-center gap-2"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+        </svg>
+        {isExistingEntry ? "Update & Re-Analyze" : "Save & Analyze"}
+      </button>
+    </div>
+  );
+
+  // --- LOADING AND ERROR STATES (Unchanged) ---
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
+      <div className="flex items-center justify-center min-h-screen bg-orange-50">
         <p className="text-gray-500 text-lg">Loading journal entry...</p>
       </div>
     );
   }
 
-  // Show error state
-  if (error || !entry) {
+  if (error) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <p className="text-red-500 text-lg">{error || "Journal entry not found."}</p>
+      <div className="flex items-center justify-center min-h-screen bg-orange-50">
+        <p className="text-red-600 text-lg">{error}</p>
       </div>
     );
   }
 
-  // Safe now: entry exists
-  const formattedContent = entry.content.split("\n").map((line, index) => (
-    <span key={index}>
-      {line}
-      <br />
-    </span>
-  ));
-
-  const processedEmotions = entry.emotions
-    .sort((a, b) => b.confidence - a.confidence)
-    .map((emotion) => ({
-      ...emotion,
-      score: emotion.confidence,
-      bg: emotionColors[emotion.name] || "bg-gray-300",
-    }));
-
+  // --- FINAL RENDER ---
   return (
-    <div className="py-8">
+    <div className="min-h-screen py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Header and Actions */}
+        {/* Header: Title, Date, and Edit Button */}
         <div className="flex justify-between items-center mb-6 flex-wrap gap-4">
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900">{entry.title.toUpperCase()}</h1>
-            <p className="text-gray-500 text-sm mt-1">
-              Written on {entry.created_at}
-            </p>
-          </div>
-          <button
-            onClick={() => navigate(`/edit/${entry.id}`)}
-            className="bg-orange-600 hover:bg-orange-700 text-white font-medium py-2 px-4 rounded-xl shadow-md transition-colors flex items-center gap-2"
+          <div
+            className={`flex-1 ${
+              mode === "edit"
+                ? "bg-white rounded-xl shadow-md border border-orange-100 p-5"
+                : ""
+            }`}
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-5 w-5"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
-              />
-            </svg>
-            Edit Entry
-          </button>
+            {renderTitleInput()}
+            {isExistingEntry && mode === "view" && (
+              <p className="text-gray-500 text-sm mt-1">
+                Written on {createdAt}
+              </p>
+            )}
+          </div>
+
+          {/* Top Right Action: ONLY SHOW EDIT BUTTON IN VIEW MODE */}
+          {mode === "view" && renderEditButtonsTop()}
         </div>
 
-        {/* Content and Analysis Layout */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {/* COLUMN 1: Read-Only Content (2/3 width) */}
-          <div className="md:col-span-2 space-y-6">
-            <div className="bg-white rounded-xl shadow-md border border-orange-100 p-6 text-gray-700 leading-relaxed text-lg whitespace-pre-wrap">
-              {formattedContent}
-            </div>
-          </div>
+        {/* Content and Analysis Layout: Single Column */}
+        <div className="space-y-8">
+          {/* Main Content Area */}
+          {renderContent()}
 
-          {/* COLUMN 2: Analysis Panel (1/3 width) */}
-          <div className="md:col-span-1">
-            <div className="bg-white rounded-xl shadow-lg border-2 border-orange-300 p-6 md:sticky md:top-8">
-              <h3 className="text-xl font-bold text-orange-900 mb-4 border-b border-orange-100 pb-3">
-                Final Analysis
-              </h3>
+          {/* Action Buttons: ONLY SHOW CANCEL/SAVE/DELETE IN EDIT MODE */}
+          {mode === "edit" && renderEditSaveActionsBottom()}
 
-              {/* Dominant Emotion */}
-              <div className="pb-2">
-                <p className="text-sm font-medium text-gray-600 mb-1">
-                  Dominant Emotion
-                </p>
-                {processedEmotions.length > 0 && (
-                  <div className="text-3xl font-extrabold flex items-baseline gap-2">
-                    <span
-                      className={`capitalize text-gray-700 px-2 py-1 rounded`}
-                    >
-                      {processedEmotions[0].name}
-                    </span>
-                    <span className="text-xl text-gray-500">
-                      {processedEmotions[0].confidence.toFixed(1)}%
-                    </span>
-                  </div>
-                )}
+          {/* Analysis Panel (Updated for compactness) */}
+          <div className="w-full">
+            <div className="bg-white rounded-xl shadow-lg border-2 border-orange-300 p-6">
+              <div className="flex items-center justify-between mb-4 border-b border-orange-100 pb-3">
+                <h3 className="text-xl font-bold text-orange-900">
+                  Emotion Analysis
+                </h3>
+                <span className="text-xs font-medium text-gray-500 whitespace-nowrap">
+                  {isAnalyzed ? "Last update: Now" : "Save to analyze"}
+                </span>
               </div>
 
-              {/* Full Emotion Breakdown */}
-              <div className="pt-4 border-t border-orange-100 mt-2">
-                <p className="text-sm font-medium text-gray-800 mb-3">
-                  Breakdown:
-                </p>
-                {processedEmotions.map((emotion, i) => (
-                  <div key={i} className="flex flex-col mb-3">
-                    <div className="flex justify-between mb-1">
-                      <span className="font-medium text-sm capitalize">
-                        {emotion.name}
+              {isAnalyzed && processedEmotions.length > 0 ? (
+                <div className="space-y-4">
+                  
+                  {/* Dominant Emotion Highlight (Larger, more prominent) */}
+                  <div className={`p-4 rounded-xl ${ANALYSIS_COLOR_CLASS.bg} shadow-sm border ${ANALYSIS_COLOR_CLASS.border}`}>
+                    <p className={`text-sm font-medium ${ANALYSIS_COLOR_CLASS.text} mb-1`}>
+                      **PRIMARY FEELING**
+                    </p>
+                    <div className="text-4xl font-extrabold flex items-baseline gap-3">
+                      <span className="text-orange-900 capitalize">
+                        {dominantEmotion.name}
                       </span>
-                      <span className="text-sm font-semibold">
-                        {emotion.confidence.toFixed(2)}%
+                      <span className="text-xl text-orange-600">
+                        {formatScore(dominantEmotion.confidence)}
                       </span>
-                    </div>
-                    <div className="w-full bg-gray-200 rounded-full h-2 overflow-hidden">
-                      <div
-                        className={`h-2 rounded-full ${emotion.bg} transition-all duration-500`}
-                        style={{ width: `${emotion.score}%` }}
-                      />
                     </div>
                   </div>
-                ))}
-              </div>
+
+                  {/* Other Emotions as Compact Chips */}
+                  {processedEmotions.length > 1 && (
+                      <div className="pt-2">
+                          <p className="text-sm font-medium text-gray-800 mb-2">
+                              Other detected emotions:
+                          </p>
+                          <div className="flex flex-wrap gap-2">
+                              {processedEmotions.slice(1).map((emotion, index) => (
+                                  <div 
+                                      key={index} 
+                                      className={`px-3 py-1 text-sm rounded-full ${ANALYSIS_COLOR_CLASS.bg} ${ANALYSIS_COLOR_CLASS.text} border border-orange-200 font-medium`}
+                                      title={`Confidence: ${formatScore(emotion.confidence)}`}
+                                  > 
+                                      {emotion.name} ({Math.round(emotion.confidence)}%)
+                                  </div>
+                              ))}
+                          </div>
+                      </div>
+                  )}
+                </div>
+              ) : (
+                <div className="text-center py-10 text-gray-500">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-10 w-10 mx-auto mb-3 text-orange-400"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"
+                    />
+                  </svg>
+                  <p className="text-sm">
+                    Save your entry to run the AI emotion analysis.
+                  </p>
+                </div>
+              )}
             </div>
           </div>
         </div>

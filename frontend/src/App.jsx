@@ -13,7 +13,6 @@ import LandingPage from "./pages/LandingPage";
 import JournalEntries from "./pages/JournalEntries";
 import Profile from "./pages/Profile";
 import EmotionHistory from "./pages/EmotionHistory";
-import CreateEditJournal from "./pages/CreateEditJournal";
 import Login from "./auth/Login";
 import Register from "./auth/Register";
 
@@ -69,7 +68,7 @@ function App() {
             path="create"
             element={
               <PrivateRoute>
-                <CreateEditJournal />
+                <JournalEntry />
               </PrivateRoute>
             }
           />
@@ -77,7 +76,7 @@ function App() {
             path="edit/:id"
             element={
               <PrivateRoute>
-                <CreateEditJournal />
+                <JournalEntry/>
               </PrivateRoute>
             }
           />
