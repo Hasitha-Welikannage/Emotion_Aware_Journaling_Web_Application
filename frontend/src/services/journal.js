@@ -6,7 +6,6 @@ export const getJournalEntries = async () => {
     method: "GET",
     credentials: "include",
   });
-  //console.log("Journal entries response:", await response.json());
   return await response.json();
 };
 
@@ -24,7 +23,7 @@ export const getJournalEntryById = async (entryId) => {
 
 export const createJournalEntry = async (entryData) => {
   try {
-    const response = await fetch(`${API_BASE_URL}/journals/`, {
+    const response = await fetch(`${API_BASE_URL}/journals`, {
       method: "POST",
       credentials: "include",
       headers: {
@@ -40,7 +39,7 @@ export const createJournalEntry = async (entryData) => {
 
 export const updateJournalEntry = async (entryId, updatedData) => {
   try {
-    const response = await fetch(`${API_BASE_URL}/journals/${entryId}/`, {
+    const response = await fetch(`${API_BASE_URL}/journals/${entryId}`, {
       method: "PUT",
       credentials: "include",
       headers: {

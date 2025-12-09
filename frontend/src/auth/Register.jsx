@@ -1,14 +1,13 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-// Assuming you have a file at '../auth/AuthContext'
 import { useAuth } from "../auth/AuthContext"; 
 
 export default function Register() {
   const { register, error } = useAuth();
   // State updated to include first_name and last_name
   const [form, setForm] = useState({ 
-    firstName: "",
-    lastName: "",
+    first_name: "",
+    last_name: "",
     email: "", 
     password: "" 
   });
@@ -18,7 +17,7 @@ export default function Register() {
     e.preventDefault();
     
     // Basic validation check
-    if (!form.firstName || !form.lastName || !form.email || !form.password) {
+    if (!form.first_name || !form.last_name || !form.email || !form.password) {
         // You would typically set a state error message here
         return; 
     }
@@ -78,11 +77,11 @@ export default function Register() {
               <label htmlFor="firstName" className="sr-only">First Name</label>
               <input
                 id="firstName"
-                name="firstName"
+                name="first_name"
                 type="text"
                 required
                 placeholder="First Name"
-                value={form.firstName}
+                value={form.first_name}
                 onChange={handleChange}
                 className="appearance-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-orange-500 focus:border-orange-500 sm:text-sm"
               />
@@ -93,11 +92,11 @@ export default function Register() {
               <label htmlFor="lastName" className="sr-only">Last Name</label>
               <input
                 id="lastName"
-                name="lastName"
+                name="last_name"
                 type="text"
                 required
                 placeholder="Last Name"
-                value={form.lastName}
+                value={form.last_name}
                 onChange={handleChange}
                 className="appearance-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-orange-500 focus:border-orange-500 sm:text-sm"
               />
