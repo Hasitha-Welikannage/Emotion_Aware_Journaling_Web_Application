@@ -1,18 +1,36 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { logoutUser } from "../services/auth";
+import { useAuth } from "../auth/AuthContext";
+import { FiMenu, FiX } from "react-icons/fi";
 
 function Navbar() {
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
+  const { logout } = useAuth(); 
 
   const navLists = [
     { name: "Home", href: "/app" },
     { name: "Journals", href: "/app/journals" },
     { name: "Emotion History", href: "/app/emotion-history" },
     { name: "Profile", href: "/app/profile" },
-
   ];
+
+  const handleLogout = async () => {
+    try {
+      // The logout function from useAuth should:
+      // a) Call the backend (logoutUser service).
+      // b) Set the user state in the AuthContext to null.
+      await logout(); 
+      
+      // Since the context is now updated (user=null), 
+      // we can safely navigate to the login page.
+      navigate("/login", { replace: true });
+    } catch (err) {
+      console.error("Logout process failed:", err);
+      navigate("/login", { replace: true }); 
+    }
+  };
+
 
   return (
     <nav className="bg-orange-50/50 shadow-sm border-b border-orange-100">
@@ -30,22 +48,15 @@ function Navbar() {
               <Link
                 key={item.name}
                 to={item.href}
-                className="text-orange-700 hover:text-orange-500"
+                className="text-orange-700 hover:text-orange-500 transition duration-150"
               >
                 {item.name}
               </Link>
             ))}
+            {/* 5. Use the consolidated handler */}
             <button
-              onClick={async () => {
-                try {
-                  await logoutUser();
-                } catch (err) {
-                  /* ignore */
-                }
-                // navigate to login page after logout
-                navigate("/login");
-              }}
-              className="text-sm font-medium px-4 py-2 rounded-sm bg-orange-400 text-white hover:bg-orange-600 cursor-pointer"
+              onClick={handleLogout}
+              className="text-sm font-medium px-4 py-2 rounded-md bg-orange-600 text-white hover:bg-orange-700 shadow-md transition duration-150 cursor-pointer"
             >
               Logout
             </button>
@@ -60,35 +71,9 @@ function Navbar() {
               className="p-2 rounded-md text-orange-700 focus:outline-none focus:ring-2 focus:ring-orange-200"
             >
               {open ? (
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-6 w-6 stroke-current"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M6 18L18 6M6 6l12 12"
-                  />
-                </svg>
+                <FiX className="h-6 w-6" />
               ) : (
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-6 w-6 stroke-current"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M4 6h16M4 12h16M4 18h16"
-                  />
-                </svg>
+                <FiMenu className="h-6 w-6" />
               )}
             </button>
           </div>
@@ -97,26 +82,21 @@ function Navbar() {
 
       {/* Mobile menu */}
       {open && (
-        <div className="md:hidden px-4 pb-4 bg-orange-50 transition-all">
+        <div className="md:hidden px-4 pb-4  transition-all border-t border-orange-100">
           {navLists.map((item) => (
             <Link
               key={item.name}
               to={item.href}
               className="block text-center py-2 text-orange-700 hover:text-orange-500"
+              onClick={() => setOpen(false)} // Close menu on link click
             >
               {item.name}
             </Link>
           ))}
+          {/* 6. Use the consolidated handler */}
           <button
-            onClick={async () => {
-              try {
-                await logoutUser();
-              } catch (err) {
-                /* ignore */
-              }
-              navigate("/login");
-            }}
-            className="block text-sm font-medium px-4 py-2 rounded-sm bg-orange-400 text-white hover:bg-orange-600 cursor-pointer w-full text-center mt-2"
+            onClick={handleLogout}
+            className="block text-sm font-medium px-4 py-2 rounded-md bg-orange-600 text-white hover:bg-orange-700 shadow-md transition duration-150 cursor-pointer w-full text-center mt-2"
           >
             Logout
           </button>

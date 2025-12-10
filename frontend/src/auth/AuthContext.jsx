@@ -81,8 +81,8 @@ export function AuthProvider({ children }) {
     } else {
       setError(response.error || "Logout failed");
     }
-
     setLoading(false);
+    return response;
   }
 
   return (
