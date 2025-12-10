@@ -271,7 +271,7 @@ function JournalEntry() {
 
   // --- FINAL RENDER ---
   return (
-    <div className="min-h-screen py-8">
+    <div className=" py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header: Title, Date, and Edit Button */}
         <div className="flex justify-between items-center mb-6 flex-wrap gap-4">
