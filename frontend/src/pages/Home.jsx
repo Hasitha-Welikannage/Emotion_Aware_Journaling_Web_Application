@@ -16,7 +16,6 @@ function Home() {
     const fetchEntries = async () => {
       try {
         const response = await getJournalEntries();
-        console.log("Fetched journal entries:", response);
         if (response.success) {
           setRecentEntries(response.data.slice(0, 3)); // Get the 3 most recent entries
         } else {

@@ -55,7 +55,7 @@ export const updateJournalEntry = async (entryId, updatedData) => {
 
 export const deleteJournalEntry = async (entryId) => {
   try {
-    const response = await fetch(`${API_BASE_URL}/journals/${entryId}/`, {
+    const response = await fetch(`${API_BASE_URL}/journals/${entryId}`, {
       method: "DELETE",
       credentials: "include",
     });

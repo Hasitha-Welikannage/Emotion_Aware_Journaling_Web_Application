@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-// Assuming your service functions are available
 import {
   getJournalEntryById,
   createJournalEntry,
@@ -118,15 +117,23 @@ function JournalEntry() {
 
   };
 
-  const handleDelete = () => {
-
+  const handleDelete = async () => {
+    setLoading(true);
     if(mode == "edit" && isExistingEntry){
-      console.log("Deleted");
-    }
-
-    if (window.confirm("Are you sure you want to delete this entry?")) {
-      console.log(`Deleting entry ${id}`);
-      navigate("/app/journals");
+      try {
+        const response = await deleteJournalEntry(id);
+        if (response.success) {
+          navigate("/app/journals");
+        } else {
+          setError(response.message || "Failed to delete entry.");
+          console.error("Failed to delete entry:", response.message);
+        }
+      } catch (err) {
+        setError("Failed to delete journal entry.");
+        console.error("Error deleting entry:", err);
+      } finally {
+        setLoading(false);
+      }
     }
   };
 

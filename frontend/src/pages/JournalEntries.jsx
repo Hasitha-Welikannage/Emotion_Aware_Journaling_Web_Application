@@ -12,9 +12,9 @@ function JournalEntries() {
 
   useEffect(() => {
     const fetchEntries = async () => {
+      setLoading(true);
       try {
         const response = await getJournalEntries();
-        console.log("Fetched journal entries:", response);
         if (response.success) {
           setEntries(response.data);
         } else {
@@ -42,6 +42,22 @@ function JournalEntries() {
     );
 
   const emotionFilters = ["All", "Joy", "Sadness", "Anger", "Fear", "Neutral"];
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-[50vh]">
+        <p className="text-gray-500">Loading journal entries...</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex items-center justify-center min-h-[50vh]">
+        <p className="text-red-500">Error: {error}</p>
+      </div>
+    );
+  }
 
   return (
     <div className=" py-8">
@@ -105,6 +121,7 @@ function JournalEntries() {
 
         {/* Journal Entries Grid/List */}
         {/* CHANGED: grid-cols-1 on mobile, lg:grid-cols-3 for desktop view */}
+       
         {filteredEntries.length === 0 ? (
           <div className="flex flex-col items-center justify-center min-h-[50vh] text-gray-500 bg-white rounded-xl shadow-sm border border-orange-100">
             <p className="text-lg font-medium">
