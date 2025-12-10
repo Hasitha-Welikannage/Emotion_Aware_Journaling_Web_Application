@@ -15,7 +15,7 @@ function Navbar() {
   ];
 
   return (
-    <nav className="bg-orange-50 shadow-sm border-b border-orange-200">
+    <nav className="bg-orange-50/50 shadow-sm border-b border-orange-100">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center">
