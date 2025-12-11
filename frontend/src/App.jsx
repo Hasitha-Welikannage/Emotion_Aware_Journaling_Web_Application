@@ -15,6 +15,7 @@ import Profile from "./pages/Profile";
 import EmotionHistory from "./pages/EmotionHistory";
 import Login from "./auth/Login";
 import Register from "./auth/Register";
+import NotFound from "./pages/NotFound";
 
 function App() {
   const router = createBrowserRouter(
@@ -23,6 +24,7 @@ function App() {
         <Route path="/" element={<LandingPage />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="*" element={<NotFound />} />
         <Route element={<PrivateRoute />}>
           <Route path="/app" element={<MainLayout />}>
             <Route path="home" element={<Home />} />

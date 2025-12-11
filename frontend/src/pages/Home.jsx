@@ -3,7 +3,13 @@ import { useNavigate, Link } from "react-router-dom";
 import { getJournalEntries } from "../services/journal.js";
 import EntryCard from "../components/EntryCard.jsx";
 import { useAuth } from "../auth/AuthContext.jsx";
-import { FiEdit, FiPlus } from "react-icons/fi";
+import {
+  FiEdit,
+  FiPlus,
+  FiAlertTriangle,
+  FiLoader,
+  FiChevronRight,
+} from "react-icons/fi";
 
 function Home() {
   const navigate = useNavigate();
@@ -11,13 +17,14 @@ function Home() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const { user } = useAuth();
+  const userName = user?.first_name || "User";
 
   useEffect(() => {
     (async () => {
       try {
         const response = await getJournalEntries();
         if (response.success) {
-          setRecentEntries(response.data.slice(0, 3)); // Get the 3 most recent entries
+          setRecentEntries(response.data.slice(0, 3));
         } else {
           setError(response.message || "Failed to load journal entries.");
         }
@@ -29,23 +36,35 @@ function Home() {
     })();
   }, []);
 
+  // --- UI Components for States ---
+  const LoadingState = () => (
+    <div className="col-span-full text-center py-10 text-gray-500 bg-white rounded-xl shadow-sm border border-gray-100">
+      <FiLoader className="h-8 w-8 animate-spin mx-auto text-orange-400" />
+      <p className="mt-3 font-medium">Loading your recent reflections...</p>
+    </div>
+  );
+
+  const ErrorState = () => (
+    <div className="col-span-full text-center py-6 text-red-700 bg-red-50 border border-red-200 rounded-xl">
+      <FiAlertTriangle className="h-6 w-6 mx-auto mb-2" />
+      <p className="font-medium">{error}</p>
+    </div>
+  );
+
   return (
-    <section className="bg-white lg:py-8 py-6">
+    <section className="py-8 ">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="bg-white rounded-xl shadow-md border border-gray-200 p-5 md:p-8 mb-10">
-          {/* Main Flex Container: Column on mobile, Row on desktop */}
+        <div className="bg-white rounded-xl shadow-lg border border-gray-100 p-6 md:p-8 mb-12">
           <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-6">
             <div className="flex-1 min-w-0">
-              <h1 className="text-3xl font-bold text-gray-900">
+              <h1 className="text-4xl font-extrabold text-gray-900 mb-2">
                 Welcome back,{" "}
-                <span className="text-orange-600">
-                  {user?.first_name || "User"}!
-                </span>
+                <span className="text-orange-600">{userName}!</span>
               </h1>
-              <h2 className="text-xl font-semibold text-gray-800 mt-2">
+              <h2 className="text-xl font-semibold text-gray-700 mt-1">
                 Ready to reflect?
               </h2>
-              <p className="text-gray-500 text-sm mt-1">
+              <p className="text-gray-500 text-base mt-2">
                 Write a new entry to get an instant AI analysis of your current
                 emotional state.
               </p>
@@ -53,41 +72,80 @@ function Home() {
             <div className="w-full md:w-auto md:max-w-xs shrink-0 mt-2 md:mt-0">
               <button
                 onClick={() => navigate("/app/journals/create")}
-                className="w-full bg-orange-600 hover:bg-orange-700 text-white font-medium py-3 px-6 rounded-lg shadow-xl transition-colors flex items-center justify-center gap-2 cursor-pointer"
+                className="w-full bg-orange-600 hover:bg-orange-700 text-white font-bold py-3 px-8 rounded-lg shadow-xl transition-all flex items-center justify-center gap-3 cursor-pointer transform hover:scale-[1.02] active:scale-100"
               >
                 <FiEdit className="h-5 w-5" />
-                Write New Journal Entry
+                Start New Journal Entry
               </button>
             </div>
           </div>
         </div>
 
-        {/* 3. Recent Entries Grid */}
+        {/* 2. Recent Entries Section */}
         <div>
           <div className="flex items-center justify-between mb-6">
-            <h3 className="text-lg font-bold text-gray-800">Recent Entries</h3>
-            <button
-              className="text-sm font-medium text-orange-600 hover:text-orange-800 hover:cursor-pointer"
-              onClick={() => navigate("/app/journals")}
+            <h3 className="text-md font-semibold text-gray-800">
+              Recent Activity
+            </h3>
+            <Link
+              to="/app/journals"
+              className="text-sm font-medium text-orange-600 hover:text-orange-800 transition-colors flex items-center gap-1"
             >
-              View all journals &rarr;
-            </button>
+              View All Journals
+              <FiChevronRight className="h-4 w-4" />
+            </Link>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {recentEntries.map((entry) => (
-              <EntryCard key={entry.id} entry={entry} />
-            ))}
-            <button
-              onClick={() => navigate("/app/journals/create")}
-              className="border-2 border-dashed border-orange-200 rounded-lg flex flex-col items-center justify-center p-8 text-center text-gray-400 hover:bg-orange-50 hover:border-orange-400 hover:text-orange-600 transition-all cursor-pointer h-full min-h-[200px]"
-            >
-              <div className="w-10 h-10 mb-2 rounded-full bg-orange-100 flex items-center justify-center">
-                <FiPlus className="h-6 w-6 text-orange-500" />
-              </div>
-              <span className="font-medium">Create New</span>
-            </button>
-          </div>
+          {/* Conditional Rendering of Data/States */}
+          {error && <ErrorState />}
+          {loading && (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <LoadingState />
+            </div>
+          )}
+
+          {!loading && !error && (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {/* Display Entries */}
+              {recentEntries.length > 0 ? (
+                recentEntries.map((entry) => (
+                  <EntryCard key={entry.id} entry={entry} />
+                ))
+              ) : (
+                // Empty State when no entries exist
+                <div className="col-span-full text-center py-16 bg-white rounded-xl border border-gray-100 shadow-sm">
+                  <FiAlertTriangle className="h-8 w-8 mx-auto mb-3 text-orange-400" />
+                  <p className="text-lg font-semibold text-gray-700">
+                    No recent entries found.
+                  </p>
+                  <p className="text-gray-500 mt-1 mb-4">
+                    Start your emotional journey by creating your first entry!
+                  </p>
+                  <button
+                    onClick={() => navigate("/app/journals/create")}
+                    className="mt-2 bg-orange-500 hover:bg-orange-600 text-white font-medium py-2 px-6 rounded-lg transition-colors shadow-md"
+                  >
+                    Write First Entry
+                  </button>
+                </div>
+              )}
+
+              {/* Create New Card (Always visible if space permits) */}
+
+              <button
+                onClick={() => navigate("/app/journals/create")}
+                className="border-2 border-dashed border-orange-300 rounded-xl flex flex-col items-center justify-center p-8 text-center text-gray-500 hover:bg-orange-50 hover:border-orange-500 hover:text-orange-700 transition-all duration-300 cursor-pointer h-full min-h-[250px]"
+              >
+                <div className="w-12 h-12 mb-3 rounded-full bg-orange-100 flex items-center justify-center shadow-md">
+                  <FiPlus className="h-7 w-7 text-orange-600" />
+                </div>
+                <span className="font-semibold text-lg">Create New Entry</span>
+                <p className="text-sm mt-1">
+                  Start tracking your emotions now.
+                </p>
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </section>

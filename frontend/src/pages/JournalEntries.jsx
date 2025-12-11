@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import EntryCard from "../components/EntryCard.jsx";
 import { getJournalEntries } from "../services/journal.js";
+import { FiSearch, FiAlertTriangle, FiLoader, FiFilter } from "react-icons/fi"; 
 
 function JournalEntries() {
   const [filter, setFilter] = useState("All");
@@ -33,7 +34,7 @@ function JournalEntries() {
   const filteredEntries = entries
     .filter(
       (entry) =>
-        filter === "All" || entry.emotions[0].name === filter.toLowerCase()
+        filter === "All" || entry.emotions[0].name.toLowerCase() === filter.toLowerCase()
     )
     .filter(
       (entry) =>
@@ -43,71 +44,65 @@ function JournalEntries() {
 
   const emotionFilters = ["All", "Joy", "Sadness", "Anger", "Fear", "Neutral"];
 
+  // Consistent Loading State
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-[50vh]">
-        <p className="text-gray-500">Loading journal entries...</p>
-      </div>
+      <section className="py-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="col-span-full text-center py-20 text-gray-500 bg-white rounded-xl shadow-lg border border-gray-100">
+                <FiLoader className="h-8 w-8 animate-spin mx-auto text-orange-500" />
+                <p className="mt-3 font-medium">Fetching all journal entries...</p>
+            </div>
+        </div>
+      </section>
     );
   }
 
+  // Consistent Error State
   if (error) {
     return (
-      <div className="flex items-center justify-center min-h-[50vh]">
-        <p className="text-red-500">Error: {error}</p>
-      </div>
+      <section className="py-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="col-span-full text-center py-10 text-red-700 bg-red-50 border border-red-200 rounded-xl">
+                <FiAlertTriangle className="h-6 w-6 mx-auto mb-2" />
+                <p className="font-medium">Error: {error}</p>
+            </div>
+        </div>
+      </section>
     );
   }
 
   return (
-    <div className=" py-8">
+    <section className="py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Header */}
-        <h1 className="text-3xl font-bold text-gray-900 mb-6">
+        <h1 className="text-4xl font-extrabold text-gray-900 mb-10">
           Your Journal Timeline
         </h1>
-
-        {/* Search and Filter Controls */}
-        <div className="bg-white rounded-xl shadow-sm p-4 mb-8 border border-orange-100">
-          <div className="flex flex-col md:flex-row gap-4 justify-between items-center">
+        {/* Search and Filter Controls (Consistent Card Style) */}
+        <div className="bg-white rounded-xl shadow-lg p-6 mb-10 border border-gray-100">
+          <div className="flex flex-col md:flex-row gap-6 justify-between items-center">
+            
             {/* Search Bar */}
-            <div className="relative w-full md:w-2/5">
+            <div className="relative w-full md:w-3/5 lg:w-2/5">
               <input
                 type="text"
                 placeholder="Search by title or content..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors"
+                className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-shadow text-base"
               />
-              <svg
+              <FiSearch 
                 className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                />
-              </svg>
+              />
             </div>
 
-            {/* Filter Dropdown */}
-            <div className="flex items-center gap-3 w-full md:w-auto justify-end">
-              <label
-                htmlFor="emotion-filter"
-                className="text-sm font-medium text-gray-600 whitespace-nowrap"
-              >
-                Filter by Emotion:
-              </label>
+            <div className="flex items-center gap-3 w-full md:w-auto justify-start md:justify-end">
+              <FiFilter className="h-5 w-5 text-orange-600 shrink-0" />
               <select
                 id="emotion-filter"
                 value={filter}
                 onChange={(e) => setFilter(e.target.value)}
-                className="px-4 py-2 border border-gray-300 rounded-lg text-sm bg-white focus:ring-2 focus:ring-orange-500 focus:border-orange-500 w-full md:w-auto"
+                className="px-4 py-3 border border-gray-300 rounded-lg text-base bg-white focus:ring-2 focus:ring-orange-500 focus:border-orange-500 w-full md:w-48 appearance-none"
               >
                 {emotionFilters.map((e) => (
                   <option key={e} value={e}>
@@ -120,11 +115,11 @@ function JournalEntries() {
         </div>
 
         {/* Journal Entries Grid/List */}
-        {/* CHANGED: grid-cols-1 on mobile, lg:grid-cols-3 for desktop view */}
-       
         {filteredEntries.length === 0 ? (
-          <div className="flex flex-col items-center justify-center min-h-[50vh] text-gray-500 bg-white rounded-xl shadow-sm border border-orange-100">
-            <p className="text-lg font-medium">
+          // Consistent Empty State Styling
+          <div className="col-span-full text-center py-20 text-gray-500 bg-white rounded-xl shadow-lg border border-gray-100">
+            <FiAlertTriangle className="h-8 w-8 mx-auto mb-3 text-orange-400" />
+            <p className="text-lg font-semibold text-gray-700">
               No journal entries match your criteria.
             </p>
             <p className="mt-2 text-sm">
@@ -139,7 +134,7 @@ function JournalEntries() {
           </div>
         )}
       </div>
-    </div>
+    </section>
   );
 }
 
