@@ -23,63 +23,16 @@ function App() {
         <Route path="/" element={<LandingPage />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/app" element={<MainLayout />}>
-          <Route
-            index
-            element={
-              <PrivateRoute>
-                <Home />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="entry/:id"
-            element={
-              <PrivateRoute>
-                <JournalEntry />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="journals"
-            element={
-              <PrivateRoute>
-                <JournalEntries />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="profile"
-            element={
-              <PrivateRoute>
-                <Profile />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="emotion-history"
-            element={
-              <PrivateRoute>
-                <EmotionHistory />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="create"
-            element={
-              <PrivateRoute>
-                <JournalEntry />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="edit/:id"
-            element={
-              <PrivateRoute>
-                <JournalEntry/>
-              </PrivateRoute>
-            }
-          />
+        <Route element={<PrivateRoute />}>
+          <Route path="/app" element={<MainLayout />}>
+            <Route index element={<Home />} />
+            <Route path="entry/:id" element={<JournalEntry />} />
+            <Route path="journals" element={<JournalEntries />} />
+            <Route path="profile" element={<Profile />} />
+            <Route path="emotion-history" element={<EmotionHistory />} />
+            <Route path="create" element={<JournalEntry />} />
+            <Route path="edit/:id" element={<JournalEntry />} />
+          </Route>
         </Route>
       </>
     )

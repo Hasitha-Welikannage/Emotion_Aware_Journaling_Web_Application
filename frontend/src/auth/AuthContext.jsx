@@ -10,8 +10,9 @@ const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [authLoading, setAuthLoading] = useState(true);
+  const [actionLoading, setActionLoading] = useState(false);
+  const [authError, setAuthError] = useState(null);
 
   // Load user on first render
   useEffect(() => {
@@ -30,9 +31,9 @@ export function AuthProvider({ children }) {
       } catch (err) {
         if (!isMounted) return;
         setUser(null);
+      } finally {
+        if (isMounted) setAuthLoading(false);
       }
-
-      if (isMounted) setLoading(false);
     })();
 
     return () => {
@@ -42,52 +43,73 @@ export function AuthProvider({ children }) {
 
   // LOGIN
   async function login(credentials) {
-    setLoading(true);
-    const response = await loginUser(credentials);
-    if (response.success) {
-      setUser(response.data);
-    } else {
+    setActionLoading(true);
+    try {
+      const response = await loginUser(credentials);
+      if (response.success) {
+        setUser(response.data);
+        setAuthError(null);
+      } else {
+        setUser(null);
+        setAuthError(response.message || "Login failed");
+      }
+    } catch (error) {
       setUser(null);
+      setAuthError("Network error during login");
+    } finally {
+      setActionLoading(false);
     }
-    setLoading(false);
-    return response;
   }
 
   // REGISTER
   async function register(details) {
-    setLoading(true);
-    const response = await registerUser(details);
-
-    if (response.success) {
-      setUser(response.data);
-      setError(null);
-    } else {
+    setActionLoading(true);
+    try{
+      const response = await registerUser(details);
+      if (response.success) {
+        setUser(response.data);
+        setAuthError(null);
+      } else {
+        setUser(null);
+        setAuthError(response.message || "Registration failed");
+      }
+    } catch{
       setUser(null);
-      setError(response.error || "Registration failed");
+      setAuthError("Network error during registration");
+    } finally{
+      setActionLoading(false);
     }
-
-    setLoading(false);
-    return response.success;
   }
 
   // LOGOUT
   async function logout() {
-    setLoading(true);
-    const response = await logoutUser();
-
-    if (response.success) {
-      setUser(null);
-      setError(null);
-    } else {
-      setError(response.error || "Logout failed");
+    setActionLoading(true);
+    try{
+      const response = await logoutUser();
+      if (response.success) {
+        setUser(null);
+        setAuthError(null);
+      } else {
+        setAuthError(response.message || "Logout failed");
+      }
+    } catch{
+      setAuthError("Network error during logout");
+    } finally{
+      setActionLoading(false);
     }
-    setLoading(false);
-    return response;
   }
 
   return (
     <AuthContext.Provider
-      value={{ user, loading, error, login, logout, register }}
+      value={{
+        user,
+        authLoading,
+        actionLoading,
+        authError,
+        login,
+        logout,
+        register,
+      }}
     >
       {children}
     </AuthContext.Provider>
