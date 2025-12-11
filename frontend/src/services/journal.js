@@ -23,7 +23,7 @@ export const getJournalEntryById = async (entryId) => {
 
 export const createJournalEntry = async (entryData) => {
   try {
-    const response = await fetch(`${API_BASE_URL}/journals`, {
+    const response = await fetch(`${API_BASE_URL}/journals/`, {
       method: "POST",
       credentials: "include",
       headers: {

@@ -11,7 +11,7 @@ function Login() {
   const [errorMessage, setErrorMessage] = useState("");
 
   // Determine where to redirect after login. Default to '/app'.
-  const REDIRECT_PATH = location.state?.from?.pathname || "/app";
+  const REDIRECT_PATH = location.state?.from?.pathname || "/app/home";
 
   // Check for existing login status
   useEffect(() => {

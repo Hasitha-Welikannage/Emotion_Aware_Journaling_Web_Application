@@ -3,7 +3,7 @@ import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../auth/AuthContext";
 
 const PASSWORD_MIN_LENGTH = 8;
-const REDIRECT_PATH_AFTER_REGISTER = "/app"; // The main application entry point
+const REDIRECT_PATH_AFTER_REGISTER = "/app/home"; // The main application entry point
 
 function Register() {
   const navigate = useNavigate();
