@@ -1,57 +1,74 @@
 import EmotionBadge from "./EmotionBadge";
 import { useNavigate } from "react-router-dom";
+import { FiChevronRight, FiClock } from "react-icons/fi"; // Added FiClock for the timestamp
 
 function EntryCard({ entry }) {
-
   const navigate = useNavigate();
 
+  // Unified options for date and time formatting
+  const dateTimeOptions = {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+    hour12: true,
+  };
+
+  const date = new Date(entry.created_at);
+
+  // Use toLocaleString for combined, cleaner output
+  const formattedDateTime = date.toLocaleString("en-US", dateTimeOptions);
+
+  // Destructure the top emotion for cleaner JSX
+  const topEmotion = entry.emotions[0];
+
   return (
-    <div className="group bg-white rounded-lg shadow-md hover:shadow-lg border border-orange-100 hover:border-orange-300 transition-all duration-200 p-5 flex flex-col h-full">
-      {/* Top Row: Date & Emotion */}
-      <div className="flex justify-between items-start mb-3">
-        <span className="text-xs font-semibold text-gray-400 uppercase tracking-wider">
-          {new Date(entry.created_at).toLocaleDateString()}
-        </span>
-        <EmotionBadge
-          emotion={entry.emotions[0].name}
-          score={entry.emotions[0].confidence}
-        />
+    // Card Wrapper: Added transform hover effect
+    <div
+      onClick={() => navigate(`/app/journals/view/${entry.id}`)} // Make the whole card clickable
+      className="group bg-white rounded-xl shadow-md border border-gray-200 py-5 px-4
+                 transition-all duration-300 cursor-pointer 
+                 hover:shadow-xl hover:border-orange-300 transform hover:-translate-y-0.3"
+    >
+      {/* Top Row: Emotion Badge & Timestamp */}
+      <div className="flex justify-between items-center mb-4">
+        {/* Emotion Badge (Placed first as the key identifier) */}
+        <EmotionBadge emotion={topEmotion.name} score={topEmotion.confidence} />
+
+        {/* Timestamp (Subtle and icon-prefixed) */}
+        <div className="flex items-center text-xs font-medium text-gray-400">
+          <FiClock className="h-3 w-3 mr-1" />
+          <span>{formattedDateTime}</span>
+        </div>
       </div>
 
       {/* Title and Preview */}
       <div className="flex-1 min-w-0 mb-4">
-        <h2 className="text-xl font-bold text-gray-800 mb-1 group-hover:text-orange-700 transition-colors">
+        <h2 className="text-lg font-bold text-gray-800 mb-2 leading-snug group-hover:text-orange-700 transition-colors">
           {entry.title}
         </h2>
-        <p className="text-gray-600 text-sm line-clamp-3">{entry.content}</p>
+        {/* Preview: Slightly richer gray for better readability */}
+        <p className="text-gray-600 text-sm line-clamp-3 leading-relaxed">
+          {entry.content}
+        </p>
       </div>
 
-      {/* Action Footer */}
-      <div className="flex justify-between items-center pt-3 border-t border-orange-50/50">
-        <span className="text-xs font-medium text-orange-800 opacity-90">
-          Top Score: {entry.emotions[0].confidence}%
+      {/* Action Footer: Now a unified 'view' link */}
+      <div className="flex justify-between items-center pt-4 border-t border-gray-100">
+        {/* Top Score Info */}
+        <span className="text-sm text-orange-800">
+          Confidence: {topEmotion.confidence}%
         </span>
-        <button 
-        onClick={() => navigate(`/app/entry/${entry.id}`)}
-        className="flex items-center gap-1 text-sm text-orange-600 hover:text-orange-800 transition-colors font-medium cursor-pointer">
-          View Details
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-4 w-4"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M9 5l7 7-7 7"
-            />
-          </svg>
-        </button>
+
+        {/* View Details Link */}
+        <div className="flex items-center gap-1 text-sm text-orange-600 group-hover:text-orange-800 transition-colors ">
+          Read Full Entry
+          <FiChevronRight className="h-4 w-4 transform group-hover:translate-x-0.5 transition-transform" />
+        </div>
       </div>
     </div>
   );
 }
+
 export default EntryCard;

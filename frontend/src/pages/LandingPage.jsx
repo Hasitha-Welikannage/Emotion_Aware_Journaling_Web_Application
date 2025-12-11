@@ -56,7 +56,7 @@ function LandingPage() {
                         Beyond simple writing, Emotion Aware uses AI to instantly analyze your entries, revealing the dominant emotions and key insights hiding in your thoughts.
                     </p>
                     <Link 
-                        to="/app" // Link to registration for new users
+                        to="/register"
                         className="inline-flex items-center justify-center px-10 py-4 border border-transparent text-lg font-bold rounded-full shadow-2xl text-white bg-orange-600 hover:bg-orange-700 transition duration-300 transform hover:scale-105"
                     >
                         Start Your Journal →

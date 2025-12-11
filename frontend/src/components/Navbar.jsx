@@ -4,33 +4,21 @@ import { useAuth } from "../auth/AuthContext";
 import { FiMenu, FiX } from "react-icons/fi";
 
 function Navbar() {
-  const [open, setOpen] = useState(false);
   const navigate = useNavigate();
-  const { logout } = useAuth(); 
+  const [open, setOpen] = useState(false);
+  const { logout, actionLoading } = useAuth(); 
 
   const navLists = [
-    { name: "Home", href: "/app" },
+    { name: "Home", href: "/app/home" },
     { name: "Journals", href: "/app/journals" },
     { name: "Emotion History", href: "/app/emotion-history" },
     { name: "Profile", href: "/app/profile" },
   ];
 
   const handleLogout = async () => {
-    try {
-      // The logout function from useAuth should:
-      // a) Call the backend (logoutUser service).
-      // b) Set the user state in the AuthContext to null.
       await logout(); 
-      
-      // Since the context is now updated (user=null), 
-      // we can safely navigate to the login page.
       navigate("/login", { replace: true });
-    } catch (err) {
-      console.error("Logout process failed:", err);
-      navigate("/login", { replace: true }); 
-    }
   };
-
 
   return (
     <nav className="bg-orange-50/50 shadow-sm border-b border-orange-100">
@@ -68,7 +56,7 @@ function Navbar() {
               onClick={() => setOpen(!open)}
               aria-label="Toggle menu"
               aria-expanded={open}
-              className="p-2 rounded-md text-orange-700 focus:outline-none focus:ring-2 focus:ring-orange-200"
+              className="p-2 rounded-md text-orange-700 focus:outline-none focus:ring-2 focus:ring-orange-200 cursor-pointer"
             >
               {open ? (
                 <FiX className="h-6 w-6" />

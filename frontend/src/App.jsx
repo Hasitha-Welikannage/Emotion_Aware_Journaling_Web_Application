@@ -25,13 +25,13 @@ function App() {
         <Route path="/register" element={<Register />} />
         <Route element={<PrivateRoute />}>
           <Route path="/app" element={<MainLayout />}>
-            <Route index element={<Home />} />
-            <Route path="entry/:id" element={<JournalEntry />} />
+            <Route path="home" element={<Home />} />
             <Route path="journals" element={<JournalEntries />} />
+            <Route path="journals/view/:id" element={<JournalEntry />} />
+            <Route path="journals/create" element={<JournalEntry />} />
+            <Route path="journals/edit/:id" element={<JournalEntry />} />
             <Route path="profile" element={<Profile />} />
             <Route path="emotion-history" element={<EmotionHistory />} />
-            <Route path="create" element={<JournalEntry />} />
-            <Route path="edit/:id" element={<JournalEntry />} />
           </Route>
         </Route>
       </>
