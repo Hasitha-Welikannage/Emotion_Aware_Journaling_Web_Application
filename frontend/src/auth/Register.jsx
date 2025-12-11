@@ -2,7 +2,6 @@ import { useState, useEffect } from "react"; // <-- Added useEffect
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../auth/AuthContext"; 
 
-// --- Constant for Validation ---
 const PASSWORD_MIN_LENGTH = 8;
 const REDIRECT_PATH_AFTER_REGISTER = "/app"; // The main application entry point
 
@@ -15,83 +14,66 @@ const initialFormState = {
 };
 
 export default function Register() {
-  const { register, error: authError, user } = useAuth(); // <-- Destructure 'user'
   const navigate = useNavigate();
 
-  // --- State Management ---
+  const { register, user, actionLoading, authError } = useAuth();
   const [form, setForm] = useState(initialFormState);
-  const [clientError, setClientError] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
-  // --- NEW: Check for existing login status ---
+  // Check for existing login status ---
   useEffect(() => {
-    // If the user object is present in the AuthContext, redirect them immediately
-    // to the main application area.
     if (user) {
         navigate(REDIRECT_PATH_AFTER_REGISTER, { replace: true });
     }
-  }, [user, navigate]); // Reruns if 'user' status changes
+  }, [user]);
 
-  // --- Handlers ---
+  // Monitor authError from context and set local error message
+  useEffect(() => {
+    if (authError) setErrorMessage(authError);
+  }, [authError]);
+
+  // Handle form input changes
   const handleChange = (e) => {
-      setClientError(""); 
       setForm({
           ...form,
           [e.target.name]: e.target.value
       });
   };
 
+  // Form Validation
   const handleValidation = () => {
     if (!form.first_name || !form.last_name || !form.email || !form.password) {
-        setClientError("All fields are required.");
+        setErrorMessage("All fields are required.");
         return false;
     }
     
     if (form.password.length < PASSWORD_MIN_LENGTH) {
-        setClientError(`Password must be at least ${PASSWORD_MIN_LENGTH} characters long.`);
+        setErrorMessage(`Password must be at least ${PASSWORD_MIN_LENGTH} characters long.`);
         return false;
     }
-    
+
     return true;
   }
 
+  // Handle form submission
   async function handleSubmit(e) {
     e.preventDefault();
-    setClientError("");
 
     if (!handleValidation()) {
         return; 
-    }
-    
-    setIsSubmitting(true);
-    
-    try {
-        const ok = await register(form);
-
-        if (ok) {
-            // Success: navigate to the main application area
-            navigate(REDIRECT_PATH_AFTER_REGISTER);
-        } // Auth error handling is done by the displayError variable below
-
-    } catch (err) {
-        setClientError("An unexpected error occurred during registration.");
-    } finally {
-        setIsSubmitting(false);
-    }
+    }    
+    await register(form);
   }
-
-  const displayError = clientError || authError;
-
 
   return (
     // Outer container: Full viewport height, orange background, centered content
     <div className="min-h-screen bg-orange-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
       
       {/* Registration Card Container */}
-      <div className="max-w-md w-full space-y-8 bg-white p-10 rounded-xl shadow-2xl border border-orange-100">
+      <div className="max-w-md w-full space-y-8 bg-white py-10 px-5 sm:px-12 rounded-lg shadow-2xl border border-orange-100">
         
         <div className="text-center">
-          <h2 className="mt-6 text-3xl font-extrabold text-orange-900">
+          <h2 className="text-3xl font-extrabold text-orange-900">
             Create Your Emotion Aware Account
           </h2>
           <p className="mt-2 text-sm text-gray-600">
@@ -106,9 +88,9 @@ export default function Register() {
         </div>
         
         {/* Authentication Error Display */}
-        {displayError && (
+        {errorMessage && (
           <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md text-sm text-center font-medium">
-            {displayError}
+            {errorMessage}
           </div>
         )}
 
@@ -129,7 +111,7 @@ export default function Register() {
                 value={form.first_name}
                 onChange={handleChange}
                 className="appearance-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-orange-500 focus:border-orange-500 sm:text-sm"
-                disabled={isSubmitting}
+                disabled={actionLoading}
               />
             </div>
 
@@ -145,7 +127,7 @@ export default function Register() {
                 value={form.last_name}
                 onChange={handleChange}
                 className="appearance-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-orange-500 focus:border-orange-500 sm:text-sm"
-                disabled={isSubmitting}
+                disabled={actionLoading}
               />
             </div>
           </div>
@@ -162,7 +144,7 @@ export default function Register() {
               value={form.email}
               onChange={handleChange}
               className="appearance-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-orange-500 focus:border-orange-500 sm:text-sm"
-              disabled={isSubmitting}
+              disabled={actionLoading}
             />
           </div>
           
@@ -178,17 +160,17 @@ export default function Register() {
               value={form.password}
               onChange={handleChange}
               className="appearance-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-orange-500 focus:border-orange-500 sm:text-sm"
-              disabled={isSubmitting}
+              disabled={actionLoading}
             />
           </div>
 
-          <div>
+          <div className="mt-7">
             <button
               type="submit"
               className="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-orange-600 hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 transition-colors disabled:bg-orange-400 disabled:cursor-not-allowed"
-              disabled={isSubmitting}
+              disabled={actionLoading}
             >
-              {isSubmitting ? (
+              {actionLoading ? (
                  <span className="flex items-center gap-2">
                     <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                         <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>

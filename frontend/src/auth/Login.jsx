@@ -1,11 +1,12 @@
-import { useState, useEffect, use } from "react"; // Added useEffect
+import { useState, useEffect } from "react";
 import { useNavigate, useLocation, Link } from "react-router-dom";
 import { useAuth } from "../auth/AuthContext";
 
 function Login() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { login, user, authLoading, actionLoading, authError } = useAuth();
+
+  const { login, user, actionLoading, authError } = useAuth();
   const [form, setForm] = useState({ email: "", password: "" });
   const [errorMessage, setErrorMessage] = useState("");
 
@@ -16,7 +17,7 @@ function Login() {
   useEffect(() => {
     // If the user object exists in the AuthContext, redirect them immediately.
     if (user) navigate(REDIRECT_PATH, { replace: true });
-  }, [user, navigate, REDIRECT_PATH]);
+  }, [user]);
 
   // Monitor authError from context and set local error message
   useEffect(() => {
@@ -99,7 +100,7 @@ function Login() {
             </div>
           </div>
 
-          <div>
+          <div className="mt-7">
             <button
               type="submit"
               className="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-orange-600 hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 transition-colors disabled:bg-orange-400 cursor-pointer disabled:cursor-not-allowed"
