@@ -306,24 +306,11 @@ function Profile() {
             "First Name",
             "first_name",
             userData.first_name,
-            true,
-            false
+            isEditing
           )}
-          {renderField(
-            "Last Name",
-            "last_name",
-            userData.last_name,
-            true,
-            false
-          )}
+          {renderField("Last Name", "last_name", userData.last_name, isEditing)}
           {/* Email is not editable, so always false, but we use the last prop conditionaly based on mode */}
-          {renderField(
-            "Email Address",
-            "email",
-            userData.email,
-            false,
-            !isEditing
-          )}
+          {renderField("Email Address", "email", userData.email, false)}
 
           {/* Password Fields (Only in Edit Mode) */}
           {isEditing && renderPasswordFields()}
