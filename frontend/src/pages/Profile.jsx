@@ -7,6 +7,7 @@ import PasswordField from "../components/PasswordField.jsx";
 import InputField from "../components/InputField.jsx";
 import Button from "../components/Button.jsx";
 import Header from "../components/Header.jsx";
+import RenderField from "../components/RenderField.jsx";
 
 // --- Constants ---
 const PASSWORD_MIN_LENGTH = 8;
@@ -36,9 +37,6 @@ function Profile() {
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-
-  // State for the new password toggle feature
-  const [showPassword, setShowPassword] = useState(false);
 
   // --- Data Fetching Effect (Load entry) ---
   useEffect(() => {
@@ -162,20 +160,8 @@ function Profile() {
   };
 
   const handleInputChange = (e) => {
-    setUserData({ ...userData, [e.target.name]: e.target.value });
+    setUserData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
-
-  const toggleShowPassword = () => {
-    setShowPassword((prev) => !prev);
-  };
-
-  // RenderField Component: Renders a Profile Field
-  const RenderField = ({ label, field }) => (
-    <div className={`flex flex-col items-stretch gap-1`}>
-      <label className="block text-sm text-gray-600">{label}</label>
-      {field}
-    </div>
-  );
 
   // Loading and Error States
   if (loading) {
@@ -228,7 +214,7 @@ function Profile() {
         {/* Profile Form/Details Card */}
         <form
           onSubmit={handleSave}
-          className="bg-white rounded-md shadow-sm border border-gray-200 p-6 space-y-2"
+          className="bg-white rounded-md shadow-sm border border-gray-200 p-6 space-y-2 "
         >
           {/* User Data Fields */}
           <RenderField
