@@ -1,9 +1,18 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import EntryCard from "../components/EntryCard.jsx";
 import { getJournalEntries } from "../services/journal.js";
-import { FiSearch, FiAlertTriangle, FiLoader, FiFilter } from "react-icons/fi";
+import Header from "../components/Header.jsx";
+import {
+  FiSearch,
+  FiAlertTriangle,
+  FiLoader,
+  FiFilter,
+  FiEdit,
+} from "react-icons/fi";
 
 function JournalEntries() {
+  const navigate = useNavigate();
   const [filter, setFilter] = useState("All");
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -76,11 +85,15 @@ function JournalEntries() {
   return (
     <section className="py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h1 className="text-4xl font-extrabold text-gray-900 mb-10">
-          Your Journal Timeline
-        </h1>
-        {/* Search and Filter Controls (Consistent Card Style) */}
-        <div className="bg-white rounded-xl shadow-lg p-6 mb-10 border border-gray-100">
+        <Header
+          title="Your Journal Entries"
+          discription="Reflect on your thoughts and emotions."
+          callToActionText="Start New Entry"
+          onClick={() => navigate("/app/journals/create")}
+          callToActionIcon={<FiEdit className="h-5 w-5" />}
+        />
+        {/* Search and Filter Section */}
+        <div className="bg-white border border-gray-200 rounded-md shadow-sm p-5 mb-8 ">
           <div className="flex flex-col md:flex-row gap-6 justify-between items-center">
             {/* Search Bar */}
             <div className="relative w-full md:w-3/5 lg:w-2/5">

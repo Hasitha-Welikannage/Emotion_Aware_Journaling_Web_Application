@@ -20,23 +20,19 @@ function EntryCard({ entry }) {
   // Use toLocaleString for combined, cleaner output
   const formattedDateTime = date.toLocaleString("en-US", dateTimeOptions);
 
-  // Destructure the top emotion for cleaner JSX
+  // Destructure the top emotion
   const topEmotion = entry.emotions[0];
 
   return (
-    // Card Wrapper: Added transform hover effect
     <div
-      onClick={() => navigate(`/app/journals/view/${entry.id}`)} // Make the whole card clickable
-      className="group bg-white rounded-xl shadow-md border border-gray-200 py-5 px-4
+      onClick={() => navigate(`/app/journals/view/${entry.id}`)}
+      className="group bg-white rounded-md shadow-sm border border-gray-200 py-5 px-4
                  transition-all duration-300 cursor-pointer 
-                 hover:shadow-xl hover:border-orange-300 transform hover:-translate-y-0.3"
+                 hover:shadow-md hover:border-orange-300 transform hover:-translate-y-0.3"
     >
-      {/* Top Row: Emotion Badge & Timestamp */}
+      {/* Header: Emotion Badge and Timestamp */}
       <div className="flex justify-between items-center mb-4">
-        {/* Emotion Badge (Placed first as the key identifier) */}
         <EmotionBadge emotion={topEmotion.name} score={topEmotion.confidence} />
-
-        {/* Timestamp (Subtle and icon-prefixed) */}
         <div className="flex items-center text-xs font-medium text-gray-400">
           <FiClock className="h-3 w-3 mr-1" />
           <span>{formattedDateTime}</span>
@@ -48,7 +44,6 @@ function EntryCard({ entry }) {
         <h2 className="text-lg font-bold text-gray-800 mb-2 leading-snug group-hover:text-orange-700 transition-colors">
           {entry.title}
         </h2>
-        {/* Preview: Slightly richer gray for better readability */}
         <p className="text-gray-600 text-sm line-clamp-3 leading-relaxed">
           {entry.content}
         </p>
@@ -56,7 +51,6 @@ function EntryCard({ entry }) {
 
       {/* Action Footer: Now a unified 'view' link */}
       <div className="flex justify-between items-center pt-4 border-t border-gray-100">
-        {/* Top Score Info */}
         <span className="text-sm text-orange-800">
           Confidence: {topEmotion.confidence}%
         </span>

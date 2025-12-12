@@ -2,7 +2,9 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { getCurrentUser } from "../services/auth.js";
 import { updateUser } from "../services/user.js";
-import { FiEye, FiEyeOff } from "react-icons/fi";
+import { FiEye, FiEyeOff, FiEdit } from "react-icons/fi";
+import Button from "../components/Button.jsx";
+import Header from "../components/Header.jsx";
 
 // --- Constants ---
 const PASSWORD_MIN_LENGTH = 8;
@@ -105,7 +107,7 @@ function Profile() {
         new_password: newPassword,
       }),
     };
-    
+
     console.log("Update Data:", updateData); // Debug log
 
     try {
@@ -253,7 +255,6 @@ function Profile() {
                 ) : (
                   // Eye slash icon (Hidden)
                   <FiEyeOff />
-
                 )}
               </button>
             </div>
@@ -285,20 +286,15 @@ function Profile() {
     <div className="py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
-        <div className="flex justify-between items-center mb-6 border-b border-orange-200 pb-4">
-          <h1 className="text-3xl font-bold text-gray-900">
-            {isEditing ? "Edit Profile" : "Your Profile"}
-          </h1>
-          {!isEditing && (
-            <button
-              onClick={() => setIsEditing(true)}
-              className="bg-orange-600 hover:bg-orange-700 text-white font-medium py-2 px-4 rounded-xl shadow-md transition-colors"
-            >
-              Edit Profile
-            </button>
-          )}
-        </div>
-
+        <Header
+          title="Your Profile"
+          discription="Manage your personal information and
+        account settings."
+          callToActionText="Edit Profile"
+          onClick={() => setIsEditing(true)}
+          callToActionIcon={<FiEdit className="h-5 w-5" />}
+          callToActionVisible={!isEditing}
+        />
         {/* Status Message (Success/Error) */}
         {(saveStatus === "success" || (error && isEditing)) && (
           <div
@@ -315,11 +311,10 @@ function Profile() {
             </p>
           </div>
         )}
-
         {/* Profile Form/Details Card */}
         <form
           onSubmit={handleSave}
-          className="bg-white rounded-xl shadow-lg border border-orange-100 p-6 space-y-2"
+          className="bg-white rounded-md shadow-sm border border-gray-200 p-6 space-y-2"
         >
           {/* User Data Fields */}
           {renderField(
