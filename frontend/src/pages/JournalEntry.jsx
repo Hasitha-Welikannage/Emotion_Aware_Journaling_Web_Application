@@ -31,6 +31,7 @@ function JournalEntry() {
 
   const [mode, setMode] = useState(null);
   const [title, setTitle] = useState("");
+  const [initialContent, setInitialContent] = useState("");
   const [content, setContent] = useState("");
   const [createdAt, setCreatedAt] = useState("");
   const [entryData, setEntryData] = useState(null);
@@ -59,6 +60,7 @@ function JournalEntry() {
             const entry = response.data;
             setTitle(entry.title);
             setContent(entry.content);
+            setInitialContent(entry.content);
             setCreatedAt(
               new Date(entry.created_at).toLocaleString("en-US", {
                 month: "long",
@@ -81,7 +83,7 @@ function JournalEntry() {
       };
       fetchEntry();
     }
-  }, [id, isExistingEntry]);
+  }, [id, isExistingEntry, initialContent]);
 
   // Emotions Processing
   const processedEmotions = entryData
@@ -101,11 +103,15 @@ function JournalEntry() {
   // Journal Entry Save
   const handleSave = async () => {
     setIsSaving(true);
-    const payload = { title, content };
+    const payload = {
+      title,
+      content: initialContent === content ? null : content,
+    };
     try {
       if (mode === "edit" && isExistingEntry) {
         const response = await updateJournalEntry(id, payload);
         if (response.success) {
+          setInitialContent(content);
           setIsAnalyzed(true);
           setMode("view");
           navigate(`/app/journals/view/${response.data.id}`);
@@ -202,7 +208,7 @@ function JournalEntry() {
   const renderEditButtonsTop = () => (
     <button
       onClick={() => setMode("edit")}
-      className="bg-orange-600 hover:bg-orange-700 text-white font-semibold py-2.5 px-6 rounded-md shadow-md transition-colors flex items-center gap-2 cursor-pointer transform hover:scale-[1.02]"
+      className="bg-orange-600 hover:bg-orange-700 text-white font-semibold py-2.5 px-6 rounded-md shadow-md transition-colors flex justify-center items-center gap-2 cursor-pointer transform hover:scale-[1.02]"
     >
       <FiEdit className="h-5 w-5" />
       Edit Entry
@@ -211,7 +217,7 @@ function JournalEntry() {
 
   // Bottom action buttons in edit mode
   const renderEditSaveActionsBottom = () => (
-    <div className="flex flex-col justify-end gap-3 mt-7">
+    <div className="flex flex-col justify-end items-stretch gap-3 md:flex-row mt-7">
       {/* Cancel Button */}
       <button
         onClick={() =>
@@ -289,14 +295,12 @@ function JournalEntry() {
     <section className="py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header: Title, Date, and Edit Button */}
-        <div className="flex justify-between items-start mb-6 flex-wrap gap-4">
+        <div className="flex flex-col justify-between items-stretch mb-6 gap-4 md:flex-row md:items-center">
           <div className="flex-1 min-w-0">
             {renderTitleInput()}
             {/* Metadata (Date) */}
             {isExistingEntry && mode === "view" && (
-              <p className="text-gray-500 text-sm mt-2">
-                Written on **{createdAt}**
-              </p>
+              <p className="text-gray-500 text-sm mt-2">{createdAt}</p>
             )}
           </div>
 
@@ -305,22 +309,22 @@ function JournalEntry() {
         </div>
 
         {/* Layout for Content and Analysis */}
-        {/* FIX: Removed explicit grid/cols on mobile, making it a simple column stack by default */}
         <div className="flex flex-col lg:grid lg:grid-cols-3 gap-8">
           {/* Main Content Area (Prioritized on mobile) */}
-          {/* FIX: Content area takes full width on mobile, and 2/3 width on large screens in view mode */}
           <div
             className={`${mode === "view" ? "lg:col-span-2" : "lg:col-span-3"}`}
           >
             {renderContent()}
-            {/* FIX: Ensure button actions are *always* after the content area in edit mode */}
             {mode === "edit" && renderEditSaveActionsBottom()}
           </div>
 
           {/* Analysis Panel (Flows beneath content on mobile) */}
           {(mode === "view" || (mode === "edit" && isExistingEntry)) && (
-            <div className="lg:col-span-1">
-              {/* FIX: Removed sticky positioning for mobile. Use sticky top-4 only on large screens */}
+            <div
+              className={`${
+                mode === "view" ? "lg:col-span-1" : "lg:col-span-3"
+              }`}
+            >
               <div className="w-full lg:sticky lg:top-4">
                 <div className="bg-white rounded-xl shadow-lg border border-orange-300 p-6">
                   <div className="flex items-center justify-between mb-4 border-b border-orange-100 pb-3">
