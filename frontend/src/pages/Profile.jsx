@@ -173,34 +173,19 @@ function Profile() {
     name,
     value,
     isEditable = true,
-    last = false,
     type = "text"
   ) => (
-    <div
-      className={`sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:py-5 border-gray-100 ${
-        last ? "" : "border-b"
-      }`}
-    >
-      <label className="block text-sm font-medium text-gray-700 sm:mt-px">
-        {label}
-      </label>
-      <div className="mt-1 sm:mt-0 sm:col-span-2">
-        {isEditing && isEditable ? (
-          <input
-            type={type}
-            name={name}
-            id={name}
-            value={value}
-            onChange={handleInputChange}
-            className={`max-w-lg block w-full sm:text-sm rounded-lg py-2 px-3 border border-gray-300 focus:ring-orange-500 focus:border-orange-500 focus:outline-none`}
-            disabled={!isEditable}
-          />
-        ) : (
-          <p className="max-w-lg block w-full sm:text-sm text-gray-900 py-2">
-            {value}
-          </p>
-        )}
-      </div>
+    <div className={`flex flex-col items-stretch gap-1`}>
+      <label className="block text-sm text-gray-600">{label}</label>
+      <input
+        type={type}
+        name={name}
+        id={name}
+        value={value}
+        onChange={handleInputChange}
+        className={`block sm:text-sm rounded-md py-2 px-3 border border-gray-300 focus:ring-orange-500 focus:border-orange-500 focus:outline-none`}
+        disabled={!isEditable}
+      />
     </div>
   );
 

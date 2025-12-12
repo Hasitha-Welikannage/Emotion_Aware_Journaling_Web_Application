@@ -55,7 +55,7 @@ function Home() {
     <section className="py-8 ">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header Section */}
-        <div className="bg-white rounded-xl shadow-lg border border-gray-100 p-6 md:p-8 mb-12">
+        <div className="bg-white rounded-md shadow-sm border border-gray-200 p-6 md:p-8 mb-6">
           <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-6">
             <div className="flex-1 min-w-0">
               <h1 className="text-4xl font-extrabold text-gray-900 mb-2">
@@ -73,7 +73,7 @@ function Home() {
             <div className="w-full md:w-auto md:max-w-xs shrink-0 mt-2 md:mt-0">
               <button
                 onClick={() => navigate("/app/journals/create")}
-                className="w-full bg-orange-600 hover:bg-orange-700 text-white font-bold py-3 px-8 rounded-lg shadow-xl transition-all flex items-center justify-center gap-3 cursor-pointer transform hover:scale-[1.02] active:scale-100"
+                className="w-full bg-orange-600 hover:bg-orange-700 text-white font-semibold py-2 px-4 rounded-md shadow-sm transition-all flex items-center justify-center gap-3 cursor-pointer transform hover:scale-[1.02] active:scale-100"
               >
                 <FiEdit className="h-5 w-5" />
                 Start New Journal Entry
