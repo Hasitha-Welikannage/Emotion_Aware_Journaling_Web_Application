@@ -19,7 +19,7 @@ def get_journal_entries():
 
     # Check if any journal entries exist for the user
     if not journal_entries:
-        raise NotFoundError(f'No journal entries found for user with id {user_id}')
+        raise NotFoundError(f'No journal entries found!')
 
     return make_response(
         status_code=200,

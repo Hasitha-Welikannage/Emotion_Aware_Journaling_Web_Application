@@ -64,19 +64,20 @@ export function AuthProvider({ children }) {
   // REGISTER
   async function register(details) {
     setActionLoading(true);
-    try{
+    try {
       const response = await registerUser(details);
       if (response.success) {
+        login({ email: details.email, password: details.password });
         setUser(response.data);
         setAuthError(null);
       } else {
         setUser(null);
         setAuthError(response.message || "Registration failed");
       }
-    } catch{
+    } catch {
       setUser(null);
       setAuthError("Network error during registration");
-    } finally{
+    } finally {
       setActionLoading(false);
     }
   }
@@ -84,7 +85,7 @@ export function AuthProvider({ children }) {
   // LOGOUT
   async function logout() {
     setActionLoading(true);
-    try{
+    try {
       const response = await logoutUser();
       if (response.success) {
         setUser(null);
@@ -92,9 +93,9 @@ export function AuthProvider({ children }) {
       } else {
         setAuthError(response.message || "Logout failed");
       }
-    } catch{
+    } catch {
       setAuthError("Network error during logout");
-    } finally{
+    } finally {
       setActionLoading(false);
     }
   }
