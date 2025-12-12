@@ -21,24 +21,17 @@ const INITIAL_USER_DATA = {
 function Profile() {
   const navigate = useNavigate();
 
-  // --- State Management ---
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [saveStatus, setSaveStatus] = useState(null); // 'success', 'error', 'saving'
   const [isEditing, setIsEditing] = useState(false);
-
-  // State to hold the original, clean data for reverting changes
   const [initialUserData, setInitialUserData] = useState(INITIAL_USER_DATA);
-
-  // State for user data (editable fields)
   const [userData, setUserData] = useState(INITIAL_USER_DATA);
-
-  // State for password changes (separate for clarity)
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
-  // --- Data Fetching Effect (Load entry) ---
+  // Fetch Current User Data on Mount
   useEffect(() => {
     const fetchUser = async () => {
       setLoading(true);
@@ -70,10 +63,9 @@ function Profile() {
     fetchUser();
   }, []);
 
-  // --- Handlers ---
-
   const handleSave = async (e) => {
     e.preventDefault();
+
     setSaveStatus("saving");
     setError("");
 
@@ -108,13 +100,10 @@ function Profile() {
       }),
     };
 
-    console.log("Update Data:", updateData); // Debug log
-
     try {
       const response = await updateUser(initialUserData.id, updateData);
 
       if (response.success) {
-        // Update both current and initial data to the new saved state
         const savedData = {
           id: response.data.id,
           first_name: response.data.first_name,
@@ -127,7 +116,7 @@ function Profile() {
         setCurrentPassword("");
         setNewPassword("");
         setConfirmPassword("");
-
+        setError(null);
         setSaveStatus("success");
         setIsEditing(false);
       } else {
@@ -148,7 +137,6 @@ function Profile() {
 
   const handleCancel = () => {
     setIsEditing(false);
-    // *** IMPROVEMENT: REVERT UNSAVED CHANGES ***
     setUserData(initialUserData);
 
     // Reset password fields and error/status messages
@@ -166,7 +154,7 @@ function Profile() {
   // Loading and Error States
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-gray-50">
+      <div className="flex items-center justify-center h-[70vh] bg-gray-50">
         <p className="text-gray-500 text-lg">Loading profile data...</p>
       </div>
     );
@@ -174,7 +162,7 @@ function Profile() {
 
   if (error && !isEditing) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-gray-50">
+      <div className="flex items-center justify-center h-[70vh] bg-gray-50">
         <p className="text-red-600 text-lg">{error}</p>
       </div>
     );

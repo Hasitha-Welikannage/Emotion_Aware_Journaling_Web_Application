@@ -31,7 +31,7 @@ function PasswordField({
       <button
         type="button"
         onClick={toggleShowPassword}
-        className="absolute inset-y-0 right-0 px-2 flex justify-center items-center text-gray-400 hover:text-gray-600 border-l border-gray-300"
+        className="absolute inset-y-0 right-0 px-2 flex justify-center items-center text-gray-400 hover:text-gray-600 border-l border-gray-300 cursor-pointer"
         aria-label={showPassword ? "Hide password" : "Show password"}
       >
         {showPassword ? (

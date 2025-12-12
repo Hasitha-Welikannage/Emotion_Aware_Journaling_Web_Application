@@ -15,6 +15,7 @@ import {
   FiAlertTriangle,
   FiActivity,
 } from "react-icons/fi";
+import Header from "../components/Header.jsx";
 
 // --- Constants ---
 const ANALYSIS_COLOR_CLASS = {
@@ -102,6 +103,7 @@ function JournalEntry() {
 
   // Journal Entry Save
   const handleSave = async () => {
+    setLoading(true);
     setIsSaving(true);
     const payload = {
       title,
@@ -129,6 +131,7 @@ function JournalEntry() {
     } catch (err) {
       setError(`Error during save: ${err.message}`);
     } finally {
+      setLoading(false);
       setIsSaving(false);
     }
   };
@@ -153,7 +156,7 @@ function JournalEntry() {
     } catch (err) {
       setError("Failed to delete journal entry.");
     } finally {
-      if (error) setLoading(false);
+      setLoading(false);
     }
   };
 
@@ -174,7 +177,7 @@ function JournalEntry() {
       );
     } else {
       return (
-        <div className="bg-gray-50 rounded-md shadow-md border border-gray-200 p-6 text-gray-700 leading-relaxed text-md text-justify whitespace-pre-wrap">
+        <div className="bg-gray-50 rounded-md shadow-md border border-gray-200 p-6 text-gray-700 leading-relaxed text-base text-justify whitespace-pre-wrap">
           {content}
         </div>
       );
@@ -191,13 +194,13 @@ function JournalEntry() {
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             placeholder="Give your entry a title..."
-            className="w-full text-3xl font-semibold focus:outline-none text-gray-600 bg-transparent"
+            className="w-full text-2xl font-semibold focus:outline-none text-gray-600 bg-transparent"
           />
         </div>
       );
     } else {
       return (
-        <h1 className="text-3xl font-semibold text-gray-600 leading-tight">
+        <h1 className="text-2xl font-semibold text-gray-600 leading-tight">
           {title}
         </h1>
       );
