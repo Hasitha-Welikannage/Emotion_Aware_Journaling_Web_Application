@@ -1,82 +1,38 @@
 from flask import request
-from flask_login import login_required, current_user
+from flask_login import login_required
 from . import user_bp
-from ..extentions import db
-from ..utils.response import make_response, make_error
-from ..models import User
-from ..utils.custom_exceptions import NotFoundError, BadRequestError
+from ..utils.response import make_response
 from .services import UserService
 
-# Get a specific user by ID
-@user_bp.route('/<int:user_id>', methods=['GET'])
+# Get current user profile
+@user_bp.route('/', methods=['GET'])
 @login_required
-def get_user(user_id):
-
-    user = UserService.get_user_by_id(user_id)
-    
+def get_user():
+    user = UserService.get_user()
     return make_response(
         status_code=200,
         data=user,  
-        message=f'User with id {user_id} found sucessfully',
+        message=f'User found sucessfully',
     )
 
-# Update a specific user by ID
-@user_bp.route('/<int:user_id>',methods=['PUT'])
+# Update current user
+@user_bp.route('/update',methods=['PUT'])
 @login_required
-def update_user(user_id):
+def update_user():
     data = request.get_json()
-    request_path = request.url
-
-    if not data.get('first_name'):
-        raise BadRequestError(message="First name is required.", path=request_path)
-    if not data.get('last_name'):
-        raise BadRequestError(message="Last name is required.", path=request_path)
-
-    user = User.query.get(user_id)
-
-    # Check if user exists
-    if not user:
-        raise NotFoundError(f'User with the id {user_id} is not found.')
-    
-    if data.get('new_password'):
-        if not data.get('current_password'):
-            raise BadRequestError(message="Current password is required.", path=request_path)
-        if not data.get('new_password'):
-            raise BadRequestError(message="New password is required.", path=request_path)
-        # Verify current password
-        if not user.check_password(data.get('current_password')):
-            raise BadRequestError('Current password is incorrect.')
-        user.set_password(data.get('new_password', user.password))
-
-    user.first_name = data.get('first_name', user.first_name)
-    user.last_name = data.get('last_name', user.last_name)
-    db.session.commit()
-
+    user = UserService.update_user(data)
     return make_response(
         status_code=200,
-        data=user.to_dict(),  
+        data=user,  
         message='User updated sucessfully',
-        path=request_path
     )    
 
 # Delete a specific user by ID
-@user_bp.route('/<int:user_id>', methods=['DELETE'])
+@user_bp.route('/delete', methods=['DELETE'])
 @login_required
-def delete_user(user_id):
-
-    request_path = request.url
-
-    user = User.query.get(user_id)
-
-    # Check if user exists
-    if not user:
-        raise NotFoundError(f'User with the id {user_id} is not found.')
-
-    db.session.delete(user)
-    db.session.commit()
-
+def delete_user():
+    UserService.delete_user()
     return make_response(
         status_code=200, 
-        message=f'User with ID {user_id} deleted successfully.',
-        path=request_path
+        message=f'User deleted successfully.',
     )
