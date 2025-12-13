@@ -4,45 +4,20 @@ from . import user_bp
 from ..extentions import db
 from ..utils.response import make_response, make_error
 from ..models import User
-from ..utils.custom_exceptions import NotFoundError, UnauthorizedError, BadRequestError
-
-# Get all users
-@user_bp.route('/', methods=['GET'])
-@login_required
-def get_all_users():
-
-    request_path = request.url
-
-    users = User.query.all()
-
-    if not users:
-        raise NotFoundError('No users found.')
-    
-    return make_response(
-        status_code=200,
-        data=[user.to_dict() for user in users],  
-        message=f'Users are found sucessfully',
-        path=request_path
-    )   
+from ..utils.custom_exceptions import NotFoundError, BadRequestError
+from .services import UserService
 
 # Get a specific user by ID
 @user_bp.route('/<int:user_id>', methods=['GET'])
 @login_required
 def get_user(user_id):
 
-    request_path = request.url
-
-    user = User.query.get(user_id)
-
-    # Check if user exists
-    if not user:
-        raise NotFoundError(f'User with the id {user_id} is not found.')
+    user = UserService.get_user_by_id(user_id)
     
     return make_response(
         status_code=200,
-        data=user.to_dict(),  
+        data=user,  
         message=f'User with id {user_id} found sucessfully',
-        path=request_path
     )
 
 # Update a specific user by ID

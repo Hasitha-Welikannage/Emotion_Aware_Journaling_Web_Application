@@ -1,4 +1,4 @@
-from flask import jsonify
+from flask import jsonify, request
 from datetime import datetime, timezone
 
 def make_response(message=None, data=None, status_code=200, path=None):
@@ -7,7 +7,7 @@ def make_response(message=None, data=None, status_code=200, path=None):
         'message': message,
         'data': data,
         'status_code': status_code,
-        'path': path,
+        'path': request.url,
         'time_stamp': datetime.now(timezone.utc)
     }
     
@@ -18,7 +18,7 @@ def make_error(message='An error occurred', status_code=400, details=None, path=
         'success': False,
         'message': message,
         'status_code': status_code,
-        'path': path,
+        'path': request.url,
         'time_stamp': datetime.now(timezone.utc)
     }
 
