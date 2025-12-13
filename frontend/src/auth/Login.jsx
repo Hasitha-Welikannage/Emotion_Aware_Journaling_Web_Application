@@ -17,6 +17,9 @@ function Login() {
   // Determine where to redirect after login. Default to '/app'.
   const REDIRECT_PATH = location.state?.from?.pathname || "/app/home";
 
+  const isValidEmail = (email) =>
+    /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
+
   // Check for existing login status
   useEffect(() => {
     // If the user object exists in the AuthContext, redirect them immediately.
@@ -36,6 +39,12 @@ function Login() {
       setErrorMessage("Please enter both email and password.");
       return;
     }
+
+    if (!isValidEmail(form.email)) {
+      setErrorMessage("Please enter a valid email address.");
+      return;
+    }
+
     setErrorMessage("");
     await login(form);
   }
@@ -74,15 +83,13 @@ function Login() {
               <label htmlFor="email-address" className="sr-only">
                 Email address
               </label>
-              <input
-                id="email-address"
+              <InputField
                 name="email"
-                type="email"
                 placeholder="Email address"
                 value={form.email}
                 onChange={(e) => setForm({ ...form, email: e.target.value })}
-                className="appearance-none rounded-md relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-orange-500 focus:border-orange-500 sm:text-sm"
-                disabled={actionLoading}
+                className="px-3 py-3 w-full"
+                isEditable={!actionLoading}
               />
             </div>
 
@@ -99,16 +106,6 @@ function Login() {
                 className="px-3 py-3"
                 isEditable={!actionLoading}
               />
-              {/* <input
-                id="password"
-                name="password"
-                type="password"
-                placeholder="Password"
-                value={form.password}
-                onChange={(e) => setForm({ ...form, password: e.target.value })}
-                className="appearance-none rounded-md relative block w-full  border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-orange-500 focus:border-orange-500 sm:text-sm"
-                disabled={actionLoading}
-              /> */}
             </div>
           </div>
 
