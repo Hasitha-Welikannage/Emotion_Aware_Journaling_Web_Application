@@ -1,7 +1,9 @@
-function RenderField({ label, field }) {
+function RenderField({ label, htmlFor, field }) {
   return (
     <div className={`flex flex-col items-stretch gap-1`}>
-      <label className="block text-sm text-gray-600">{label}</label>
+      <label htmlFor={htmlFor} className="block text-sm text-gray-600">
+        {label}
+      </label>
       {field}
     </div>
   );

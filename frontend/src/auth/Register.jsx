@@ -19,6 +19,7 @@ function Register() {
     last_name: "",
     email: "",
     password: "",
+    confirm_password: "",
   });
 
   const isValidEmail = (email) =>
@@ -60,6 +61,11 @@ function Register() {
 
     if (!isValidEmail(form.email)) {
       setErrorMessage("Please enter a valid email address.");
+      return;
+    }
+
+    if (form.password !== form.confirm_password) {
+      setErrorMessage("Password and the Confirm Password do not match");
       return;
     }
 
@@ -108,35 +114,33 @@ function Register() {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {/* First Name */}
             <div>
-              <label htmlFor="firstName" className="sr-only">
+              <label htmlFor="first_name" className="sr-only">
                 First Name
               </label>
-              <input
-                id="firstName"
+              <InputField
                 name="first_name"
-                type="text"
                 placeholder="First Name"
                 value={form.first_name}
                 onChange={handleChange}
-                className="appearance-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-orange-500 focus:border-orange-500 sm:text-sm"
-                disabled={actionLoading}
+                className="px-3 py-3 w-full"
+                autoComplete="given_name"
+                isEditable={!actionLoading}
               />
             </div>
 
             {/* Last Name */}
             <div>
-              <label htmlFor="lastName" className="sr-only">
+              <label htmlFor="last_name" className="sr-only">
                 Last Name
               </label>
-              <input
-                id="lastName"
+              <InputField
                 name="last_name"
-                type="text"
                 placeholder="Last Name"
                 value={form.last_name}
                 onChange={handleChange}
-                className="appearance-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-orange-500 focus:border-orange-500 sm:text-sm"
-                disabled={actionLoading}
+                className="px-3 py-3 w-full"
+                autoComplete="family-name"
+                isEditable={!actionLoading}
               />
             </div>
           </div>
@@ -146,15 +150,15 @@ function Register() {
             <label htmlFor="email" className="sr-only">
               Email address
             </label>
-            <input
-              id="email"
-              name="email"
+            <InputField
               type="email"
+              name="email"
               placeholder="Email address"
               value={form.email}
               onChange={handleChange}
-              className="appearance-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-orange-500 focus:border-orange-500 sm:text-sm"
-              disabled={actionLoading}
+              className="px-3 py-3 w-full"
+              autoComplete="email"
+              isEditable={!actionLoading}
             />
           </div>
 
@@ -163,15 +167,30 @@ function Register() {
             <label htmlFor="password" className="sr-only">
               Password
             </label>
-            <input
-              id="password"
+            <PasswordField
               name="password"
-              type="password"
-              placeholder={`Password (min ${PASSWORD_MIN_LENGTH} characters)`}
               value={form.password}
+              placeholder={`Password (min ${PASSWORD_MIN_LENGTH} characters)`}
               onChange={handleChange}
-              className="appearance-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-orange-500 focus:border-orange-500 sm:text-sm"
-              disabled={actionLoading}
+              className="px-3 py-3"
+              autoComplete="new-password"
+              isEditable={!actionLoading}
+            />
+          </div>
+
+          {/* Confirm Password Input */}
+          <div>
+            <label htmlFor="confirm_password" className="sr-only">
+              Confirm Password
+            </label>
+            <PasswordField
+              name="confirm_password"
+              value={form.confirm_password}
+              placeholder={`Confirm Password`}
+              onChange={handleChange}
+              className="px-3 py-3"
+              autoComplete="new-password"
+              isEditable={!actionLoading}
             />
           </div>
 

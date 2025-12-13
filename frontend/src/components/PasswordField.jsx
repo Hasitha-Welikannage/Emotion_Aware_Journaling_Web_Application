@@ -6,6 +6,7 @@ function PasswordField({
   value,
   placeholder,
   onChange,
+  autoComplete = "current-password",
   className = "",
   isEditable = true,
 }) {
@@ -26,6 +27,7 @@ function PasswordField({
         className={`block w-full text-sm placeholder:text-sm rounded-md py-2 px-3 border border-gray-300 focus:ring-orange-500 focus:border-orange-500 focus:outline-none pr-10 ${className}`}
         type={showPassword ? "text" : "password"}
         disabled={!isEditable}
+        autoComplete={autoComplete}
       />
       {/* Password Toggle Button */}
       <button

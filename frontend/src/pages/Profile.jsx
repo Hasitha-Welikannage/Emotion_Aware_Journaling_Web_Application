@@ -207,36 +207,42 @@ function Profile() {
           {/* User Data Fields */}
           <RenderField
             label="First Name"
+            htmlFor="first_name"
             field={
               <InputField
                 type="text"
                 name="first_name"
                 value={userData.first_name}
                 onChange={handleInputChange}
+                autoComplete="given-name"
                 isEditable={isEditing}
               />
             }
           />
           <RenderField
             label="Last Name"
+            htmlFor="last_name"
             field={
               <InputField
                 type="text"
                 name="last_name"
                 value={userData.last_name}
                 onChange={handleInputChange}
+                autoComplete="family-name"
                 isEditable={isEditing}
               />
             }
           />
           <RenderField
             label="Email Address"
+            htmlFor="email"
             field={
               <InputField
                 type="email"
                 name="email"
                 value={userData.email}
                 onChange={handleInputChange}
+                autoComplete="email"
                 isEditable={false} // Email is not editable
               />
             }
@@ -247,6 +253,7 @@ function Profile() {
             <>
               <RenderField
                 label="Current Password (Required to change)"
+                htmlFor="current_password"
                 field={
                   <PasswordField
                     name="current_password"
@@ -255,12 +262,14 @@ function Profile() {
                     onChange={(e) => {
                       setCurrentPassword(e.target.value);
                     }}
+                    autoComplete="current-password"
                     isEditable={isEditing}
                   />
                 }
               />
               <RenderField
                 label="New Password"
+                htmlFor="new_password"
                 field={
                   <PasswordField
                     name="new_password"
@@ -269,12 +278,14 @@ function Profile() {
                     onChange={(e) => {
                       setNewPassword(e.target.value);
                     }}
+                    autoComplete="new-password"
                     isEditable={isEditing}
                   />
                 }
               />
               <RenderField
                 label="Confirm New Password"
+                htmlFor="confirm_password"
                 field={
                   <PasswordField
                     name="confirm_password"
@@ -283,6 +294,7 @@ function Profile() {
                     onChange={(e) => {
                       setConfirmPassword(e.target.value);
                     }}
+                    autoComplete="new-password"
                     isEditable={isEditing}
                   />
                 }

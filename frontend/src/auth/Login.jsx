@@ -84,11 +84,13 @@ function Login() {
                 Email address
               </label>
               <InputField
+                type="email"
                 name="email"
                 placeholder="Email address"
                 value={form.email}
                 onChange={(e) => setForm({ ...form, email: e.target.value })}
                 className="px-3 py-3 w-full"
+                autoComplete="email"
                 isEditable={!actionLoading}
               />
             </div>

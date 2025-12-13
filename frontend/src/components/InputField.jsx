@@ -3,6 +3,7 @@ function InputField({
   value,
   placeholder,
   onChange,
+  autoComplete = "",
   className = "",
   isEditable = true,
   type = "text",
@@ -17,6 +18,7 @@ function InputField({
       className={`block sm:text-sm placeholder:text-sm rounded-md py-2 px-3 border border-gray-300 focus:ring-orange-500 focus:border-orange-500 focus:outline-none disabled:bg-gray-100 ${className}`}
       type={type}
       disabled={!isEditable}
+      autoComplete={autoComplete}
     />
   );
 }
