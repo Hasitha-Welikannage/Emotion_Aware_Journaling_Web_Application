@@ -2,11 +2,12 @@ import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../auth/AuthContext";
 import { FiMenu, FiX } from "react-icons/fi";
+import Button from "./Button";
 
 function Navbar() {
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
-  const { logout, actionLoading } = useAuth(); 
+  const { logout, actionLoading } = useAuth();
 
   const navLists = [
     { name: "Home", href: "/app/home" },
@@ -16,8 +17,8 @@ function Navbar() {
   ];
 
   const handleLogout = async () => {
-      await logout(); 
-      navigate("/login", { replace: true });
+    await logout();
+    navigate("/login", { replace: true });
   };
 
   return (
@@ -82,12 +83,9 @@ function Navbar() {
             </Link>
           ))}
           {/* 6. Use the consolidated handler */}
-          <button
-            onClick={handleLogout}
-            className="block text-sm font-medium px-4 py-2 rounded-md bg-orange-600 text-white hover:bg-orange-700 shadow-md transition duration-150 cursor-pointer w-full text-center mt-2"
-          >
+          <Button onClick={handleLogout} className=" w-full ">
             Logout
-          </button>
+          </Button>
         </div>
       )}
     </nav>

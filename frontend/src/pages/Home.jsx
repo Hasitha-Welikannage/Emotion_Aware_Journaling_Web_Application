@@ -24,7 +24,11 @@ function Home() {
       try {
         const response = await getJournalEntries();
         if (response.success) {
-          setRecentEntries(response.data.slice(0, 3));
+          setRecentEntries(
+            response.data
+              .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+              .slice(0, 3)
+          );
         } else {
           setError(response.message || "Failed to load journal entries.");
         }

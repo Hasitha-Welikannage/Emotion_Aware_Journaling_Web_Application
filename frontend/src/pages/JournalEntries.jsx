@@ -50,7 +50,8 @@ function JournalEntries() {
       (entry) =>
         entry.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
         entry.content.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    )
+    .sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
 
   const emotionFilters = ["All", "Joy", "Sadness", "Anger", "Fear", "Neutral"];
 

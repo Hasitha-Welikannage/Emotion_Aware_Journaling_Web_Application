@@ -12,7 +12,7 @@ function Button({
     <button
       type={type}
       onClick={onClick}
-      className={`flex justify-center items-center gap-2 py-2 px-4 rounded-sm shadow-sm font-semibold ${textColor} ${bgColor} ${hoverBgColor} transition-colors disabled:opacity-50 cursor-pointer ${className}`}
+      className={`flex justify-center items-center gap-2 py-2 px-4 rounded-sm shadow-sm font-semibold ${textColor} ${bgColor} ${hoverBgColor} focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-800 transition-colors disabled:opacity-50 cursor-pointer ${className}`}
       disabled={disabled}
     >
       {children}

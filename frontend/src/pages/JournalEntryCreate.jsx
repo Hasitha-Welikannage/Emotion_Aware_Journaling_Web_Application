@@ -129,7 +129,7 @@ function JournalEntryCreate() {
               <Button onClick={handleSave} disabled={loading}>
                 {loading ? (
                   <>
-                    <FiLoader className="h-5 w-5 animate-spin" />
+                    <FiLoader className="h-5 w-5 animate-spin text-white" />
                     Saving...
                   </>
                 ) : (

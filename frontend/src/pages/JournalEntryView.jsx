@@ -117,7 +117,7 @@ function JournalEntryView() {
         <div className="flex flex-col lg:grid lg:grid-cols-3 gap-8">
           {/* Main Content Area (Prioritized on mobile) */}
           <div className={`lg:col-span-2`}>
-            <div className="bg-gray-50 rounded-md shadow-md border border-gray-200 p-5 text-gray-700 leading-relaxed text-justify whitespace-pre-wrap">
+            <div className="bg-gray-50 rounded-md shadow-sm border border-gray-200 p-5 text-gray-700 leading-relaxed text-justify whitespace-pre-wrap">
               {content}
             </div>
           </div>
@@ -126,7 +126,7 @@ function JournalEntryView() {
           <div className={`lg:col-span-1`}>
             <div className="w-full lg:sticky lg:top-4">
               <div className="bg-white rounded-md shadow-sm border border-orange-300 p-5">
-                <div className="flex items-center justify-between mb-4 border-b border-gray-300 pb-3">
+                <div className="flex items-center justify-between mb-1 pb-2">
                   <h3 className="text-lg font-bold text-orange-900 flex items-center gap-2">
                     <FiActivity className="h-5 w-5 text-orange-600" />
                     Emotion Analysis
@@ -160,10 +160,10 @@ function JournalEntryView() {
                           {processedEmotions.slice(1).map((emotion, index) => (
                             <div
                               key={index}
-                              className={`px-3 py-2 text-sm rounded-full bg-orange-50/50 text-orange-900 border border-orange-300`}
-                              title={`Confidence: ${emotion.score}`}
+                              className={`px-3 py-2 text-sm rounded-full bg-orange-50/50 text-orange-900 border border-orange-300 capitalize`}
+                              title={`Score: ${emotion.score}`}
                             >
-                              {emotion.name} ({Math.round(emotion.score)}%)
+                              {emotion.name} ({emotion.score})
                             </div>
                           ))}
                         </div>
