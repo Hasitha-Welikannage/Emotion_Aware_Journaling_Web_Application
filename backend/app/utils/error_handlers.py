@@ -27,9 +27,8 @@ def registor_error_handlers(app, login_manager):
     @login_manager.unauthorized_handler
     def handle_unauthorized():
         return make_error(
-            message='Unauthorized Access',
+            message='Authentication is required to access this resource.',
             status_code=401,
-            details='Authentication is required to access this resource.',
             path=request.path
         )
     

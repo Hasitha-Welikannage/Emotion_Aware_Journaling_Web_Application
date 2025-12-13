@@ -1,8 +1,8 @@
-from flask import request
-from flask_login import login_required
 from . import user_bp
-from ..utils.response import make_response
+from flask import request
 from .services import UserService
+from flask_login import login_required
+from ..utils.response import make_response
 
 # Get current user profile
 @user_bp.route('/', methods=['GET'])
@@ -24,10 +24,10 @@ def update_user():
     return make_response(
         status_code=200,
         data=user,  
-        message='User updated sucessfully',
+        message=f'User updated sucessfully',
     )    
 
-# Delete a specific user by ID
+# Delete current user
 @user_bp.route('/delete', methods=['DELETE'])
 @login_required
 def delete_user():
