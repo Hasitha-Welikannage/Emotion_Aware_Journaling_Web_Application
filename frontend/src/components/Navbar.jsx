@@ -43,12 +43,16 @@ function Navbar() {
               </Link>
             ))}
             {/* 5. Use the consolidated handler */}
-            <button
-              onClick={handleLogout}
-              className="text-sm font-medium px-4 py-2 rounded-md bg-orange-600 text-white hover:bg-orange-700 shadow-md transition duration-150 cursor-pointer"
-            >
-              Logout
-            </button>
+            <Button onClick={handleLogout} className="text-sm font-normal">
+              {actionLoading ? (
+                <span className="flex items-center gap-2">
+                  <FiLoader className="h-5 w-5 animate-spin text-white" />
+                  logging out...
+                </span>
+              ) : (
+                "Logout"
+              )}
+            </Button>
           </div>
 
           {/* Mobile toggle */}
@@ -84,7 +88,14 @@ function Navbar() {
           ))}
           {/* 6. Use the consolidated handler */}
           <Button onClick={handleLogout} className=" w-full ">
-            Logout
+            {actionLoading ? (
+              <span className="flex items-center gap-2">
+                <FiLoader className="h-5 w-5 animate-spin text-white" />
+                logging out...
+              </span>
+            ) : (
+              "Logout"
+            )}
           </Button>
         </div>
       )}
