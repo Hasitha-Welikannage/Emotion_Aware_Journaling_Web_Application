@@ -3,7 +3,7 @@ const API_BASE_URL = "/api";
 
 export const getUser = async (userId) => {
   try {
-    const response = await fetch(`${API_BASE_URL}/users/${userId}`, {
+    const response = await fetch(`${API_BASE_URL}/user/`, {
       method: "GET",
       credentials: "include",
     });
@@ -16,7 +16,7 @@ export const getUser = async (userId) => {
 
 export const updateUser = async (userId, updatedData) => {
   try {
-    const response = await fetch(`${API_BASE_URL}/users/${userId}`, {
+    const response = await fetch(`${API_BASE_URL}/user/update`, {
       method: "PUT",
       credentials: "include",
       headers: {
@@ -33,7 +33,7 @@ export const updateUser = async (userId, updatedData) => {
 
 export const deleteUser = async (userId) => {
   try {
-    const response = await fetch(`${API_BASE_URL}/users/${userId}`, {
+    const response = await fetch(`${API_BASE_URL}/user/delete`, {
       method: "DELETE",
       credentials: "include",
     });

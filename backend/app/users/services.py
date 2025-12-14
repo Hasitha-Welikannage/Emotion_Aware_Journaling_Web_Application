@@ -51,7 +51,7 @@ class UserService:
             if not user.check_password(current_password.strip()):
                 raise BadRequestError("Current password is incorrect.")
 
-            user.set_password(new_password.strip())
+            user.password = new_password.strip()
 
         try:
             db.session.commit()

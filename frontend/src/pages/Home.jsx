@@ -80,7 +80,9 @@ function Home() {
                 className="w-full bg-orange-600 hover:bg-orange-700 text-white font-semibold py-2 px-4 rounded-md shadow-sm transition-all flex items-center justify-center gap-3 cursor-pointer transform hover:scale-[1.02] active:scale-100"
               >
                 <FiEdit className="h-5 w-5" />
-                Start New Journal Entry
+                {recentEntries.length > 0
+                  ? "Write a New Journal Entry"
+                  : "Write Your First Entry"}
               </button>
             </div>
           </div>
@@ -118,7 +120,7 @@ function Home() {
                 ))
               ) : (
                 // Empty State when no entries exist
-                <div className="col-span-full text-center py-16 bg-white rounded-xl border border-gray-100 shadow-sm">
+                <div className="col-span-full text-center py-16 px-5 bg-white rounded-md border border-gray-100 shadow-sm">
                   <FiAlertTriangle className="h-8 w-8 mx-auto mb-3 text-orange-400" />
                   <p className="text-lg font-semibold text-gray-700">
                     No recent entries found.
@@ -126,29 +128,27 @@ function Home() {
                   <p className="text-gray-500 mt-1 mb-4">
                     Start your emotional journey by creating your first entry!
                   </p>
-                  <button
-                    onClick={() => navigate("/app/journals/create")}
-                    className="mt-2 bg-orange-500 hover:bg-orange-600 text-white font-medium py-2 px-6 rounded-lg transition-colors shadow-md"
-                  >
-                    Write First Entry
-                  </button>
                 </div>
               )}
 
               {/* Create New Card (Always visible if space permits) */}
 
-              <button
-                onClick={() => navigate("/app/journals/create")}
-                className="border-2 border-dashed border-orange-300 rounded-xl flex flex-col items-center justify-center p-8 text-center text-gray-500 hover:bg-orange-50 hover:border-orange-500 hover:text-orange-700 transition-all duration-300 cursor-pointer h-full min-h-[250px]"
-              >
-                <div className="w-12 h-12 mb-3 rounded-full bg-orange-100 flex items-center justify-center shadow-md">
-                  <FiPlus className="h-7 w-7 text-orange-600" />
-                </div>
-                <span className="font-semibold text-lg">Create New Entry</span>
-                <p className="text-sm mt-1">
-                  Start tracking your emotions now.
-                </p>
-              </button>
+              {recentEntries.length > 0 && (
+                <button
+                  onClick={() => navigate("/app/journals/create")}
+                  className="border-2 border-dashed border-orange-300 rounded-xl flex flex-col items-center justify-center p-8 text-center text-gray-500 hover:bg-orange-50 hover:border-orange-500 hover:text-orange-700 transition-all duration-300 cursor-pointer h-full min-h-[250px]"
+                >
+                  <div className="w-12 h-12 mb-3 rounded-full bg-orange-100 flex items-center justify-center shadow-md">
+                    <FiPlus className="h-7 w-7 text-orange-600" />
+                  </div>
+                  <span className="font-semibold text-lg">
+                    Create New Entry
+                  </span>
+                  <p className="text-sm mt-1">
+                    Start tracking your emotions now.
+                  </p>
+                </button>
+              )}
             </div>
           )}
         </div>

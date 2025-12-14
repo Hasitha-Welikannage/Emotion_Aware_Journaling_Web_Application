@@ -89,7 +89,7 @@ function JournalEntries() {
         <Header
           title="Your Journal Entries"
           discription="Reflect on your thoughts and emotions."
-          callToActionText="Start New Entry"
+          callToActionText="Write a New Journal Entry"
           onClick={() => navigate("/app/journals/create")}
           callToActionIcon={<FiEdit className="h-5 w-5" />}
         />
@@ -129,7 +129,7 @@ function JournalEntries() {
         {/* Journal Entries Grid/List */}
         {filteredEntries.length === 0 ? (
           // Consistent Empty State Styling
-          <div className="col-span-full text-center py-20 text-gray-500 bg-white rounded-xl shadow-lg border border-gray-100">
+          <div className="col-span-full text-center py-20 px-5 text-gray-500 bg-white rounded-md shadow-sm border border-gray-100">
             <FiAlertTriangle className="h-8 w-8 mx-auto mb-3 text-orange-400" />
             <p className="text-lg font-semibold text-gray-700">
               No journal entries match your criteria.
