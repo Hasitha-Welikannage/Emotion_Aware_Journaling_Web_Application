@@ -71,7 +71,7 @@ class UserService:
         try:
             db.session.delete(user)
             db.session.commit()
-        except:
+        except Exception:
             db.session.rollback()
             raise
 
