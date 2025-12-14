@@ -1,6 +1,5 @@
 from flask_login import current_user, logout_user
 from ..extentions import db
-from ..models import User
 from ..utils.custom_exceptions import NotFoundError, BadRequestError
 
 class UserService:

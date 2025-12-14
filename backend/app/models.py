@@ -9,26 +9,33 @@ class User(db.Model,UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     first_name = db.Column(db.String(120), nullable=False)
     last_name = db.Column(db.String(120), nullable=False)
-    email = db.Column(db.String(255), nullable=False)
-    password = db.Column(db.String(255), nullable=False)
-    created_at = db.Column(db.DateTime(timezone=True), nullable=False, default=datetime.now(timezone.utc))
-    last_login = db.Column(db.DateTime(timezone=True), nullable=True)
+    email = db.Column(db.String(255), nullable=False, unique=True, index=True)
+    _password_hash = db.Column("password_hash", db.String(255), nullable=False)
+    created_at = db.Column(db.DateTime(timezone=True), nullable=False, default=lambda: datetime.now(timezone.utc))
+    last_login = db.Column(db.DateTime(timezone=True), nullable=True, index=True)
 
-    def set_password(self, password):
-        self.password = bcrypt.generate_password_hash(password).decode('utf-8')
-    
-    def check_password(self, password):
-        return bcrypt.check_password_hash(self.password, password)
+    @property
+    def password(self):
+        raise AttributeError("Password is write-only")
+
+    @password.setter
+    def password(self, raw_password):
+        if not raw_password or not raw_password.strip():
+            raise ValueError("Password cannot be empty")
+        self._password_hash = bcrypt.generate_password_hash(raw_password).decode("utf-8")
+
+    def check_password(self, raw_password):
+        return bcrypt.check_password_hash(self._password_hash, raw_password)
     
     def __repr__(self):
-        return f'<User {self.email}>'
+        return f'<User {self.id}>'
 
     def to_dict(self):
         return {
             "id": self.id,
             "first_name": self.first_name,
             "last_name": self.last_name,
-            "email": self.email
+            "email": self.email,
         }
     
 class JournalEntry(db.Model):
@@ -39,14 +46,14 @@ class JournalEntry(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     title = db.Column(db.String(255), nullable=True)
     content = db.Column(db.Text, nullable=False)
-    created_at = db.Column(db.DateTime(timezone=True), nullable=False, default=datetime.now(timezone.utc))
-    updated_at = db.Column(db.DateTime(timezone=True), nullable=True, default=datetime.now(timezone.utc), onupdate=datetime.now(timezone.utc))
+    created_at = db.Column(db.DateTime(timezone=True), nullable=False, default=lambda: datetime.now(timezone.utc))
+    updated_at = db.Column(db.DateTime(timezone=True), nullable=True, default=lambda: datetime.now(timezone.utc), onupdate=lambda: datetime.now(timezone.utc))
 
     user = db.relationship('User', backref=db.backref('journal_entries', lazy='dynamic', cascade="all, delete-orphan"))
     emotions = db.relationship('Emotion', backref='journal_entry', lazy=True, cascade="all, delete-orphan")
 
     def __repr__(self):
-        return f'<JournalEntry {self.id} - {self.title}>'
+        return f'<JournalEntry {self.id}>'
     
     def to_dict(self):
         return {
@@ -59,16 +66,16 @@ class JournalEntry(db.Model):
 
 class Emotion(db.Model):
 
-    __tablename__ = 'emotion'
+    __tablename__ = 'emotions'
     
     id = db.Column(db.Integer, primary_key=True)
     entry_id = db.Column(db.Integer, db.ForeignKey('journal_entries.id'), nullable=False)
     emotion_name = db.Column(db.String(150), nullable=False)
     confidence_score = db.Column(db.Float, nullable=False)
-    created_at = db.Column(db.DateTime(timezone=True), nullable=False, default=datetime.now(timezone.utc))
+    created_at = db.Column(db.DateTime(timezone=True), nullable=False, default=lambda: datetime.now(timezone.utc))
 
     def __repr__(self):
-        return f'<Emotion {self.emotion_name} ({self.confidence_score}%)>'
+        return f'<Emotion {self.id}>'
 
     def to_dict(self):
         return {

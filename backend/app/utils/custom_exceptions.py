@@ -27,7 +27,7 @@ class BadRequestError(AppError):
 
 class UnauthorizedError(AppError):
     status_code = 401
-    message = 'Unauthorized access.'
+    message = 'Authentication is required to access this resource.'
 
 class ForbiddenError(AppError):
     status_code = 403
