@@ -26,7 +26,7 @@ def get_journal_entry(entry_id):
         
     return make_response(
         status_code=200,
-        data=journal_entry.to_dict(),  
+        data=journal_entry,  
         message=f'Journal entry found successfully',
     )
 
