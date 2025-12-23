@@ -4,7 +4,8 @@ from transformers import DistilBertTokenizerFast, DistilBertForSequenceClassific
 
 class EmotionDetection():
 
-    model_path = "./emotion_model_research"
+    #model_path = '/Users/hasithawelikannage/Downloads/emotion_model_research_optimized'
+    model_path = '/Users/hasithawelikannage/Documents/GitHub/Emotion_Aware_Journaling_Web_Application/backend/app/emotion_detect/emotion_model'
     max_length = 512
     chunk_overlap = 50
     default_threshhold = 0.3
@@ -95,7 +96,7 @@ class EmotionDetection():
                 'detected': prob >= threshold
             })
 
-        results.sort(key=lambda x: x["percentage"], reverse=True)
+        results.sort(key=lambda x: x['score'], reverse=True)
         return results[:top_k] if top_k else results
     
     @staticmethod
