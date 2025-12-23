@@ -3,7 +3,7 @@ from .response import make_error
 from .custom_exceptions import AppError
 import logging
 
-def registor_error_handlers(app, login_manager):
+def registor_error_handlers(app):
 
     @app.errorhandler(AppError)
     def handle_app_error(error):
@@ -21,14 +21,6 @@ def registor_error_handlers(app, login_manager):
             message='Internal Server Error',
             status_code=500,
             details=str(error),
-            path=request.path
-        )
-
-    @login_manager.unauthorized_handler
-    def handle_unauthorized():
-        return make_error(
-            message='Authentication is required to access this resource.',
-            status_code=401,
             path=request.path
         )
     
