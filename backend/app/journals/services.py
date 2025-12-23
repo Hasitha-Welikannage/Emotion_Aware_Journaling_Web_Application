@@ -1,3 +1,4 @@
+import requests
 from ..extentions import db
 from flask_login import current_user
 from ..models import JournalEntry, Emotion
@@ -47,13 +48,13 @@ class JournalService():
             content=content
         )
 
-        emotions = analyze_emotions(content)
+        emotions = JournalService._emotion_detection(content)
 
-        for emotion_name, confidence_score in emotions.items():
+        for emotion, score in emotions.items():
             emotion = Emotion(
                 entry_id=new_entry.id,
-                emotion_name=emotion_name,
-                confidence_score=confidence_score
+                emotion_name=emotion,
+                confidence_score=score
             )
             new_entry.emotions.append(emotion)
 
@@ -95,12 +96,12 @@ class JournalService():
                 
                 # Re-analyze emotions if content is updated
                 journal_entry.emotions.clear()
-                emotions = analyze_emotions(content)
-                for emotion_name, confidence_score in emotions.items():
+                emotions = JournalService._emotion_detection(content)
+                for emotion, score in emotions.items():
                     emotion = Emotion(
                         entry_id=journal_entry.id,
-                        emotion_name=emotion_name,
-                        confidence_score=confidence_score
+                        emotion_name=emotion,
+                        confidence_score=score
                     )
                     journal_entry.emotions.append(emotion)
         try:
@@ -126,3 +127,32 @@ class JournalService():
         except Exception:
             db.session.rollback()
             raise
+
+    @staticmethod
+    def _emotion_detection(text):
+        try:
+            response = requests.post('http://127.0.0.1:5001/api/v1/emotion_detect/',
+                json= {
+                    "text": text,
+                    "threshold": 0.01,  # Optional, default 0.3
+                    "top_k": 28,  # Optional, return top 10 emotions
+                    "strategy": "average"  # Optional: "average" or "max"
+                }              
+            )
+
+            response = response.json()
+
+            if response.get('success'):
+                emotions = response.get('data')
+                emotions = {
+                    emotion.get('emotion'): emotion.get('score') for emotion in emotions
+                }
+                return emotions
+            else:
+                if response.get('status_code') == 400:
+                    BadRequestError(message=response.get('message'))
+                if response.get('status_code') == 500:
+                    raise
+        except Exception:
+            raise        
+

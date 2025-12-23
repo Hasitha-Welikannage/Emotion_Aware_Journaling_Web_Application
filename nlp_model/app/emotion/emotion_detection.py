@@ -4,8 +4,7 @@ from transformers import DistilBertTokenizerFast, DistilBertForSequenceClassific
 
 class EmotionDetection():
 
-    #model_path = '/Users/hasithawelikannage/Downloads/emotion_model_research_optimized'
-    model_path = '/Users/hasithawelikannage/Documents/GitHub/Emotion_Aware_Journaling_Web_Application/backend/app/emotion_detect/emotion_model'
+    model_path = '/Users/hasithawelikannage/Downloads/emotion_model_research_optimized'
     max_length = 512
     chunk_overlap = 50
     default_threshhold = 0.3
@@ -109,7 +108,7 @@ class EmotionDetection():
             probabilities = EmotionDetection._predict_chunk(text)
         else:
             probabilities = EmotionDetection._predict_with_chunking(
-                tokens, threshold, strategy
+                tokens, strategy
             )
 
         return EmotionDetection._format_results(probabilities, threshold, top_k)
