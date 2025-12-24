@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../auth/AuthContext";
-import { FiMenu, FiX } from "react-icons/fi";
+import { FiMenu, FiX, FiLoader } from "react-icons/fi";
 import Button from "./Button";
 
 function Navbar() {
