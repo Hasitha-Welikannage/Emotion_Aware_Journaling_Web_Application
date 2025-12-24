@@ -19,12 +19,10 @@ def create_app():
 
     from .users import user_bp
     from .auth import auth_bp
-    from .emotion_detect import emotion_bp
     from .journals import journals_bp
 
     app.register_blueprint(user_bp, url_prefix='/user')
     app.register_blueprint(auth_bp, url_prefix='/auth')
     app.register_blueprint(journals_bp, url_prefix='/journals')
-    app.register_blueprint(emotion_bp)
     
     return app
