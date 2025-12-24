@@ -8,14 +8,18 @@ import {
 import { FiLoader, FiAlertTriangle } from "react-icons/fi";
 import Header from "../components/Header.jsx";
 import Button from "../components/Button.jsx";
+import ErrorMessage from "../components/ErrorMessage.jsx";
 
 function JournalEntryEdit() {
   const navigate = useNavigate();
   const { id } = useParams();
 
   const [title, setTitle] = useState("");
-  const [initialContent, setInitialContent] = useState("");
   const [content, setContent] = useState("");
+  const [initialData, setInitialData] = useState({
+    title: "",
+    content: "",
+  });
 
   const [loading, setLoading] = useState(null);
   const [error, setError] = useState(null);
@@ -31,7 +35,11 @@ function JournalEntryEdit() {
           const entry = response.data;
           setTitle(entry.title);
           setContent(entry.content);
-          setInitialContent(entry.content);
+          setInitialData((prev) => ({
+            ...prev,
+            title: entry.title,
+            content: entry.content,
+          }));
         } else {
           setError(response.message || "Failed to fetch entry.");
         }
@@ -48,14 +56,22 @@ function JournalEntryEdit() {
   const handleSave = async () => {
     setLoading(true);
     setIsSaving(true);
-    const payload = {
-      title,
-      content: initialContent === content ? null : content,
-    };
+    const payload = {};
+    if (initialData.title !== title.trim()) {
+      payload.title = title.trim();
+    }
+    if (initialData.content !== content.trim()) {
+      payload.content = content.trim();
+    }
+    if (Object.keys(payload).length === 0) {
+      setError("No changes have been made to save.");
+      setLoading(false);
+      setIsSaving(false);
+      return;
+    }
     try {
       const response = await updateJournalEntry(id, payload);
       if (response.success) {
-        setInitialContent(content);
         navigate(`/app/journals/view/${response.data.id}`);
       } else {
         setError(response.message || "Failed to update entry.");
@@ -106,25 +122,6 @@ function JournalEntryEdit() {
     );
   }
 
-  if (error) {
-    return (
-      <section className="py-8">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center py-10 text-red-700 bg-red-50 border border-red-200 rounded-xl">
-            <FiAlertTriangle className="h-6 w-6 mx-auto mb-2" />
-            <p className="font-medium">Error: {error}</p>
-            <button
-              onClick={() => navigate("/app/home")}
-              className="mt-4 text-sm text-red-700 underline hover:text-red-900 cursor-pointer"
-            >
-              Go to Home
-            </button>
-          </div>
-        </div>
-      </section>
-    );
-  }
-
   return (
     <section className="py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -133,6 +130,10 @@ function JournalEntryEdit() {
           discription="Update your thoughts and feelings."
           callToActionVisible={false}
         />
+        {/* Error Message */}
+        {error && (
+          <ErrorMessage error={error} closeAction={() => setError(null)} />
+        )}
         {/* Title Input Area */}
         <div className="flex flex-col justify-between items-stretch mb-6 gap-4">
           <div className="bg-gray-50 rounded-md shadow-md border border-gray-200 p-5">

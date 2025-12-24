@@ -2,7 +2,6 @@ import requests
 from ..extentions import db
 from flask_login import current_user
 from ..models import JournalEntry, Emotion
-from ..emotion_detect.emotion_model_run import analyze_emotions
 from ..utils.custom_exceptions import NotFoundError, BadRequestError
 
 class JournalService():
