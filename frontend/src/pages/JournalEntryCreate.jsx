@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { createJournalEntry } from "../services/journal.js";
-import { FiLoader, FiAlertTriangle, FiX } from "react-icons/fi";
+import { FiLoader } from "react-icons/fi";
 import Header from "../components/Header.jsx";
 import Button from "../components/Button.jsx";
 import ErrorMessage from "../components/ErrorMessage.jsx";

@@ -5,7 +5,7 @@ import {
   updateJournalEntry,
   deleteJournalEntry,
 } from "../services/journal.js";
-import { FiLoader, FiAlertTriangle } from "react-icons/fi";
+import { FiLoader } from "react-icons/fi";
 import Header from "../components/Header.jsx";
 import Button from "../components/Button.jsx";
 import ErrorMessage from "../components/ErrorMessage.jsx";
