@@ -57,7 +57,7 @@ back_end/*.pem
 back_end/*.key
 
 # Emotion model (custom)
-backend/app/emotion_detect/emotion_model/
+nlp_model/model/
 
 # =====================================
 # 🔹 FRONTEND (React)
