@@ -2,6 +2,7 @@ import requests
 from ..extentions import db
 from flask_login import current_user
 from ..models import JournalEntry, Emotion
+from ..emotion_analysis.services import EmotionAnalysisService
 from ..utils.custom_exceptions import NotFoundError, BadRequestError
 
 class JournalService():
@@ -47,7 +48,7 @@ class JournalService():
             content=content
         )
 
-        emotions = JournalService._emotion_detection(content)
+        emotions = EmotionAnalysisService.emotion_detection(content)
 
         for emotion, score in emotions.items():
             emotion = Emotion(
@@ -95,7 +96,7 @@ class JournalService():
                 
                 # Re-analyze emotions if content is updated
                 journal_entry.emotions.clear()
-                emotions = JournalService._emotion_detection(content)
+                emotions = EmotionAnalysisService.emotion_detection(content)
                 for emotion, score in emotions.items():
                     emotion = Emotion(
                         entry_id=journal_entry.id,
@@ -126,32 +127,5 @@ class JournalService():
         except Exception:
             db.session.rollback()
             raise
-
-    @staticmethod
-    def _emotion_detection(text):
-        try:
-            response = requests.post('http://127.0.0.1:5001/api/v1/emotion_detect/',
-                json= {
-                    "text": text,
-                    "threshold": 0.01,  # Optional, default 0.3
-                    "top_k": 28,  # Optional, return top 10 emotions
-                    "strategy": "average"  # Optional: "average" or "max"
-                }              
-            )
-
-            response = response.json()
-
-            if response.get('success'):
-                emotions = response.get('data')
-                emotions = {
-                    emotion.get('emotion'): emotion.get('score') for emotion in emotions
-                }
-                return emotions
-            else:
-                if response.get('status_code') == 400:
-                    BadRequestError(message=response.get('message'))
-                if response.get('status_code') == 500:
-                    raise
-        except Exception:
-            raise        
+     
 

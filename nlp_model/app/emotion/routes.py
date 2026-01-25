@@ -24,7 +24,7 @@ def health():
     return make_response(
         status_code=200,
         data=health_info,
-        message=f'Model health loaded sucessfully.'
+        message=f'Model health loaded successfully.'
     )
 
 @emotion_bp.route('/info', methods=['GET'])
