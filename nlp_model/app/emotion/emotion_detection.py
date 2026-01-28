@@ -4,7 +4,7 @@ from transformers import DistilBertTokenizerFast, DistilBertForSequenceClassific
 
 class EmotionDetection():
 
-    model_path = '/Users/hasithawelikannage/Documents/GitHub/Emotion_Aware_Journaling_Web_Application/nlp_model/model'
+    model_path = '/Users/hasithawelikannage/Documents/GitHub/Emotion_Aware_Journaling_Web_Application/nlp_model/emotion_model'
     max_length = 512
     chunk_overlap = 50
     default_threshhold = 0.3
