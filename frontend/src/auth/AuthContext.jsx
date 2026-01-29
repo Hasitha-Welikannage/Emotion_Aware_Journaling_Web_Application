@@ -67,8 +67,9 @@ export function AuthProvider({ children }) {
     try {
       const response = await registerUser(details);
       if (response.success) {
-        login({ email: details.email, password: details.password });
-        setUser(response.data);
+        //login({ email: details.email, password: details.password });
+        //setUser(response.data);
+        setUser(null); // Require login after registration
         setAuthError(null);
       } else {
         setUser(null);
@@ -100,6 +101,22 @@ export function AuthProvider({ children }) {
     }
   }
 
+  async function refreshUser() {
+    setAuthLoading(true);
+    try {
+      const response = await getCurrentUser();
+      if (response.success) {
+        setUser(response.data);
+      } else {
+        setUser(null);
+      }
+    } catch {
+      setUser(null);
+    } finally {
+      setAuthLoading(false);
+    }
+  }
+
   return (
     <AuthContext.Provider
       value={{
@@ -110,6 +127,7 @@ export function AuthProvider({ children }) {
         login,
         logout,
         register,
+        refreshUser,
       }}
     >
       {children}

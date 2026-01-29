@@ -54,7 +54,7 @@ function Register() {
 
     if (form.password.length < PASSWORD_MIN_LENGTH) {
       setErrorMessage(
-        `Password must be at least ${PASSWORD_MIN_LENGTH} characters long.`
+        `Password must be at least ${PASSWORD_MIN_LENGTH} characters long.`,
       );
       return false;
     }
@@ -80,6 +80,7 @@ function Register() {
       return;
     }
     await register(form);
+    navigate(REDIRECT_PATH_AFTER_REGISTER, { replace: true });
   }
 
   return (

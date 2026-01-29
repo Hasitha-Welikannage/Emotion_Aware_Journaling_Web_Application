@@ -8,6 +8,7 @@ import InputField from "../components/InputField.jsx";
 import Button from "../components/Button.jsx";
 import Header from "../components/Header.jsx";
 import RenderField from "../components/RenderField.jsx";
+import { useAuth } from "../auth/AuthContext";
 
 // --- Constants ---
 const PASSWORD_MIN_LENGTH = 8;
@@ -20,6 +21,7 @@ const INITIAL_USER_DATA = {
 
 function Profile() {
   const navigate = useNavigate();
+  const { refreshUser } = useAuth();
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -78,7 +80,7 @@ function Profile() {
       }
       if (newPassword.length < PASSWORD_MIN_LENGTH) {
         setError(
-          `New password must be at least ${PASSWORD_MIN_LENGTH} characters.`
+          `New password must be at least ${PASSWORD_MIN_LENGTH} characters.`,
         );
         setSaveStatus("error");
         return;
@@ -112,6 +114,8 @@ function Profile() {
         };
         setUserData(savedData);
         setInitialUserData(savedData);
+
+        await refreshUser(); // Refresh auth context user data
 
         setCurrentPassword("");
         setNewPassword("");
