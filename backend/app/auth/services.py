@@ -6,7 +6,6 @@ from ..utils.custom_exceptions import ConflictError, NotFoundError, Unauthorized
 
 class AuthService():
 
-        
     @staticmethod
     def get_current_user():
         # Check if user is authenticated
@@ -80,6 +79,21 @@ class AuthService():
         last_name = data.get('last_name').strip()
         email = data.get('email').strip().lower()
         password = data.get('password').strip()
+
+        if not first_name:
+            raise BadRequestError(message="First name is required.")
+        if not last_name:
+            raise BadRequestError(message="Last name is required.")
+        if not email:
+            raise BadRequestError(message="Email is required.")
+        if not password:
+            raise BadRequestError(message="Password is required.")
+        if '@' not in email or '.' not in email:
+            raise BadRequestError(message="Email address is not valid.")
+        if password.isspace():
+            raise BadRequestError(message="Password cannot be empty or whitespace.")
+        if len(password) < 6:
+            raise BadRequestError(message="Password must be at least 6 characters long.")
 
         # Check if user with the same email already exists
         if User.query.filter_by(email=email).first():
