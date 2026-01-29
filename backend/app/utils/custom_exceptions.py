@@ -45,7 +45,9 @@ class ConflictError(AppError):
     status_code = 409
     message = 'Conflict occurred.'
 
-
+class ServiceUnavailableError(AppError):
+    status_code = 503
+    message = 'Service is currently unavailable.'
 
 
 

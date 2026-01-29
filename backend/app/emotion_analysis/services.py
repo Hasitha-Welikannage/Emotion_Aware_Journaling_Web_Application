@@ -1,5 +1,6 @@
 import requests
-from ..utils.custom_exceptions import BadRequestError
+from requests.exceptions import ConnectionError, Timeout, RequestException
+from ..utils.custom_exceptions import BadRequestError, ServiceUnavailableError
 
 class EmotionAnalysisService:
 
@@ -29,5 +30,11 @@ class EmotionAnalysisService:
                     raise BadRequestError(message=response.get('message'))
                 if response.get('status_code') == 500:
                     raise
+        except ConnectionError:
+            raise ServiceUnavailableError(message="Emotion Analysis Service is unavailable.")        
+        except (ConnectionError, Timeout):
+            raise ServiceUnavailableError(message="Emotion Analysis Service is unavailable.")        
+        except RequestException as e:
+            raise ServiceUnavailableError(message=str(e))
         except Exception:
             raise        
