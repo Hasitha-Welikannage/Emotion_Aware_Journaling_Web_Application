@@ -26,7 +26,7 @@ class EmotionAnalysisService:
                 return emotions
             else:
                 if response.get('status_code') == 400:
-                    BadRequestError(message=response.get('message'))
+                    raise BadRequestError(message=response.get('message'))
                 if response.get('status_code') == 500:
                     raise
         except Exception:

@@ -27,6 +27,11 @@ class AuthService():
         email = data.get('email').strip().lower()
         password = data.get('password').strip()
 
+        if not email:
+            raise BadRequestError(message="Email is required.")
+        if not password:
+            raise BadRequestError(message="Password is required.")
+
         user = User.query.filter_by(email=email).first()
 
         # Check if user exists
