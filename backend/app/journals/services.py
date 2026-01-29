@@ -50,10 +50,10 @@ class JournalService():
 
         emotions = EmotionAnalysisService.emotion_detection(content)
 
-        for emotion, score in emotions.items():
+        for emotion_name, score in emotions.items():
             emotion = Emotion(
                 entry_id=new_entry.id,
-                emotion_name=emotion,
+                emotion_name=emotion_name,
                 confidence_score=score
             )
             new_entry.emotions.append(emotion)
@@ -97,10 +97,10 @@ class JournalService():
                 # Re-analyze emotions if content is updated
                 journal_entry.emotions.clear()
                 emotions = EmotionAnalysisService.emotion_detection(content)
-                for emotion, score in emotions.items():
+                for emotion_name, score in emotions.items():
                     emotion = Emotion(
                         entry_id=journal_entry.id,
-                        emotion_name=emotion,
+                        emotion_name=emotion_name,
                         confidence_score=score
                     )
                     journal_entry.emotions.append(emotion)

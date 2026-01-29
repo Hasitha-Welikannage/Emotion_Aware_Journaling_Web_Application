@@ -13,7 +13,7 @@ class EmotionAnalysisService:
                     "threshold": 0.01,  # Optional, default 0.3
                     "top_k": 28,  # Optional, return top 10 emotions
                     "strategy": "average"  # Optional: "average" or "max"
-                }              
+                }, timeout=10              
             )
 
             response = response.json()

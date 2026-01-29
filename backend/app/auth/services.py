@@ -90,8 +90,6 @@ class AuthService():
             raise BadRequestError(message="Password is required.")
         if '@' not in email or '.' not in email:
             raise BadRequestError(message="Email address is not valid.")
-        if password.isspace():
-            raise BadRequestError(message="Password cannot be empty or whitespace.")
         if len(password) < 6:
             raise BadRequestError(message="Password must be at least 6 characters long.")
 

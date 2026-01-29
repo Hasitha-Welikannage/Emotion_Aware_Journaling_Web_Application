@@ -10,9 +10,6 @@ from ..utils.custom_exceptions import MethodNotAllowedError
 @login_required
 def get_current_user():
 
-    if request.method != 'GET':
-        raise MethodNotAllowedError('Method not allowed. Use GET method.')
-
     user = AuthService.get_current_user()
     return make_response(
         message='Current user retrieved successfully.',
@@ -23,9 +20,6 @@ def get_current_user():
 # User Login Route
 @auth_bp.route('/login', methods=['POST'])
 def user_login():
-
-    if request.method != 'POST':
-        raise MethodNotAllowedError('Method not allowed. Use POST method.')
 
     data = request.get_json()
     user = AuthService.user_login(data)
@@ -40,9 +34,6 @@ def user_login():
 @login_required
 def user_logout():
 
-    if request.method != 'POST':
-        raise MethodNotAllowedError('Method not allowed. Use POST method.')
-
     AuthService.user_logout()
     return make_response(
         message='User logout sucessfully.',
@@ -52,9 +43,6 @@ def user_logout():
 # User Registration Route
 @auth_bp.route('/register', methods=['POST'])
 def user_register():
-
-    if request.method != 'POST':
-        raise MethodNotAllowedError('Method not allowed. Use POST method.')
 
     data = request.get_json()
     new_user = AuthService.user_register(data)

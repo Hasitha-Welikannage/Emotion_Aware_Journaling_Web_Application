@@ -1,7 +1,7 @@
 from flask import Flask
 from .config import Config
 from .extentions import db, login_manager, migrate, bcrypt, cors
-from .utils.error_handlers import registor_error_handlers
+from .utils.error_handlers import register_error_handlers
 
 def create_app():
 
@@ -15,7 +15,7 @@ def create_app():
     cors.init_app(app, origins=["http://localhost:3000"], supports_credentials=True)
 
     login_manager.login_view = None
-    registor_error_handlers(app, login_manager)
+    register_error_handlers(app, login_manager)
 
     from .users import user_bp
     from .auth import auth_bp

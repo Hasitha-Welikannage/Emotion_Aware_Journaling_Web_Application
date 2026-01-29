@@ -3,7 +3,7 @@ from .response import make_error
 from .custom_exceptions import AppError
 import logging
 
-def registor_error_handlers(app, login_manager):
+def register_error_handlers(app, login_manager):
 
     @app.errorhandler(AppError)
     def handle_app_error(error):
@@ -20,7 +20,6 @@ def registor_error_handlers(app, login_manager):
         return make_error(
             message='Internal Server Error',
             status_code=500,
-            details=str(error),
             path=request.path
         )
 
