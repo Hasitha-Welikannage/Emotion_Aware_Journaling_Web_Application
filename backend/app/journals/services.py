@@ -1,4 +1,3 @@
-import requests
 from ..extentions import db
 from flask_login import current_user
 from ..models import JournalEntry, Emotion

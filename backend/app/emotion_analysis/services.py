@@ -29,9 +29,7 @@ class EmotionAnalysisService:
                 if response.get('status_code') == 400:
                     raise BadRequestError(message=response.get('message'))
                 if response.get('status_code') == 500:
-                    raise
-        except ConnectionError:
-            raise ServiceUnavailableError(message="Emotion Analysis Service is unavailable.")        
+                    raise ServiceUnavailableError(message="Emotion Analysis Service returned an error.")
         except (ConnectionError, Timeout):
             raise ServiceUnavailableError(message="Emotion Analysis Service is unavailable.")        
         except RequestException as e:
