@@ -146,10 +146,10 @@ class TestAuthService:
             "password": "password123"
         }
 
-        with pytest.raises(NotFoundError) as exc_info:
+        with pytest.raises(UnauthorizedError) as exc_info:
             AuthService.user_login(data)
 
-        assert exc_info.value.message == "There is no user under given email."
+        assert exc_info.value.message == "Invalid email or password."
 
     @patch('app.auth.services.User')
     def test_user_login_incorrect_password(self, mock_user_class, mock_user):
@@ -165,7 +165,7 @@ class TestAuthService:
         with pytest.raises(UnauthorizedError) as exc_info:
             AuthService.user_login(data)
 
-        assert exc_info.value.message == "Password is incorrect."
+        assert exc_info.value.message == "Invalid email or password."
         mock_user.check_password.assert_called_once_with("wrongpassword")
 
     @patch('app.auth.services.db.session')
@@ -319,20 +319,8 @@ class TestAuthService:
 
         assert exc_info.value.message == "First name is required."
 
-    @patch('app.auth.services.db.session')
-    @patch('app.auth.services.User')
-    def test_user_register_whitespace_first_name(self, mock_user_class, mock_db_session):
-        """Test registration with whitespace-only first name"""
-        mock_user_class.query.filter_by.return_value.first.return_value = None
-        mock_user_instance = Mock()
-        mock_user_instance.to_dict.return_value = {
-            "id": 1,
-            "first_name": "",  # Will be empty after strip
-            "last_name": "Doe",
-            "email": "john.doe@example.com"
-        }
-        mock_user_class.return_value = mock_user_instance
-        
+    def test_user_register_whitespace_first_name(self):
+        """Test registration with whitespace-only first name is rejected"""
         data = {
             "first_name": "   ",
             "last_name": "Doe",
@@ -340,13 +328,11 @@ class TestAuthService:
             "password": "password123"
         }
 
-        # Service allows whitespace and strips it to empty string
-        result = AuthService.user_register(data)
-        
-        # Verify registration succeeded with stripped values
-        assert result["first_name"] == ""
-        mock_db_session.add.assert_called_once_with(mock_user_instance)
-        mock_db_session.commit.assert_called_once()
+        # Service rejects whitespace-only first name after stripping
+        with pytest.raises(BadRequestError) as exc_info:
+            AuthService.user_register(data)
+
+        assert exc_info.value.message == "First name is required."
 
 
     def test_user_register_missing_last_name(self):

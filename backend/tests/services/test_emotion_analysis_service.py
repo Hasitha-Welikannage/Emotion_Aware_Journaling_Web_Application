@@ -3,7 +3,7 @@ from unittest.mock import Mock, patch
 import requests
 
 from app.emotion_analysis.services import EmotionAnalysisService
-from app.utils.custom_exceptions import BadRequestError
+from app.utils.custom_exceptions import BadRequestError, ServiceUnavailableError
 
 
 class TestEmotionAnalysisService:
@@ -39,7 +39,8 @@ class TestEmotionAnalysisService:
                 "threshold": 0.01,
                 "top_k": 28,
                 "strategy": "average"
-            }
+            },
+            timeout=10
         )
 
     @patch('app.emotion_analysis.services.requests.post')
@@ -217,16 +218,20 @@ class TestEmotionAnalysisService:
         """Test when connection to API fails"""
         mock_post.side_effect = requests.ConnectionError("Connection refused")
 
-        with pytest.raises(requests.ConnectionError):
+        with pytest.raises(ServiceUnavailableError) as exc_info:
             EmotionAnalysisService.emotion_detection("Test text")
+
+        assert exc_info.value.message == "Emotion Analysis Service is unavailable."
 
     @patch('app.emotion_analysis.services.requests.post')
     def test_emotion_detection_timeout_error(self, mock_post):
         """Test when API request times out"""
         mock_post.side_effect = requests.Timeout("Request timeout")
 
-        with pytest.raises(requests.Timeout):
+        with pytest.raises(ServiceUnavailableError) as exc_info:
             EmotionAnalysisService.emotion_detection("Test text")
+
+        assert exc_info.value.message == "Emotion Analysis Service is unavailable."
 
     @patch('app.emotion_analysis.services.requests.post')
     def test_emotion_detection_json_decode_error(self, mock_post):

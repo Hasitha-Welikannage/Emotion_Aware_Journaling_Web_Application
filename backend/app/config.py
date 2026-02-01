@@ -8,10 +8,29 @@ class Config():
     SECRET_KEY = os.getenv("SECRET_KEY")
     SQLALCHEMY_DATABASE_URI = os.getenv("SQLALCHEMY_DATABASE_URI")
     SQLALCHEMY_TRACK_MODIFICATIONS = False
-    SESSION_COOKIE_SECURE = False
+
     PERMANENT_SESSION_LIFETIME = timedelta(hours=24)
-    SESSION_COOKIE_HTTPONLY = True
     SESSION_PERMANENT = True
+    SESSION_COOKIE_HTTPONLY = True
     SESSION_COOKIE_SAMESITE = "Lax"
-    REMEMBER_COOKIE_SECURE = False
     REMEMBER_COOKIE_SAMESITE = "Lax"
+
+class DevelopmentConfig(Config):
+    DEBUG = True
+
+    SESSION_COOKIE_SECURE = False
+    REMEMBER_COOKIE_SECURE = False
+
+
+class ProductionConfig(Config):
+    DEBUG = False
+
+    SESSION_COOKIE_SECURE = True
+    REMEMBER_COOKIE_SECURE = True
+
+    
+
+config_by_name = {
+    "dev": DevelopmentConfig,
+    "prod": ProductionConfig,
+}

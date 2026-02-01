@@ -1,12 +1,14 @@
+import os
 from flask import Flask
-from .config import Config
+from .config import config_by_name
 from .extentions import db, login_manager, migrate, bcrypt, cors
 from .utils.error_handlers import register_error_handlers
 
 def create_app():
 
     app = Flask(__name__)
-    app.config.from_object(Config)
+    env = os.getenv("FLASK_ENV", "dev")
+    app.config.from_object(config_by_name[env])
 
     db.init_app(app)
     migrate.init_app(app,db)

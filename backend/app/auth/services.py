@@ -1,8 +1,9 @@
+import re
 from ..models import User
 from ..extentions import db
 from datetime import datetime, timezone
 from flask_login import login_user, logout_user, current_user
-from ..utils.custom_exceptions import ConflictError, NotFoundError, UnauthorizedError, BadRequestError
+from ..utils.custom_exceptions import ConflictError, UnauthorizedError, BadRequestError
 
 class AuthService():
 
@@ -35,11 +36,11 @@ class AuthService():
 
         # Check if user exists
         if not user:
-            raise NotFoundError(message=f'There is no user under given email.')    
+            raise UnauthorizedError(message='Invalid email or password.')    
 
         # Check if password is correct
         if not user.check_password(password):
-            raise UnauthorizedError(message='Password is incorrect.')
+            raise UnauthorizedError(message='Invalid email or password.')
         
         login_user(user, remember=True)
 
@@ -88,10 +89,14 @@ class AuthService():
             raise BadRequestError(message="Email is required.")
         if not password:
             raise BadRequestError(message="Password is required.")
-        if '@' not in email or '.' not in email:
+        
+        EMAIL_REGEX = re.compile(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$')
+
+        if not EMAIL_REGEX.match(email):
             raise BadRequestError(message="Email address is not valid.")
-        if len(password) < 6:
-            raise BadRequestError(message="Password must be at least 6 characters long.")
+        
+        if len(password) < 8:
+            raise BadRequestError(message="Password must be at least 8 characters long.")
 
         # Check if user with the same email already exists
         if User.query.filter_by(email=email).first():
