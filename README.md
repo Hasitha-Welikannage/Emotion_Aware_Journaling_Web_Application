@@ -246,12 +246,6 @@ source .venv/bin/activate
 python -m pytest tests/
 ```
 
-Run with coverage:
-
-```bash
-pytest --cov=app --cov-report=html
-```
-
 ## Tech Stack
 
 ### Frontend
@@ -320,22 +314,6 @@ python run.py
 The frontend Vite dev server is configured to proxy API requests to the backend. All requests to `/api/*` are forwarded to `http://127.0.0.1:5000`.
 
 ## Troubleshooting
-
-### Port Already in Use
-
-If you see an error about a port being in use, ensure no other processes are using ports 3000, 5000, or 5001:
-
-```bash
-# Check which process is using a port (macOS/Linux)
-lsof -i :5000
-
-# Kill the process
-kill -9 <PID>
-
-# On Windows, use:
-netstat -ano | findstr :5000
-taskkill /PID <PID> /F
-```
 
 ### Database Issues
 
