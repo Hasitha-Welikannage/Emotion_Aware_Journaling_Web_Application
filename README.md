@@ -134,8 +134,8 @@ flask db upgrade
 The emotion detection model needs to be downloaded from Google Drive and placed in the correct directory.
 
 1. **Download the model** from Google Drive:
-   - **Google Drive Link**: `[ADD_YOUR_GOOGLE_DRIVE_LINK_HERE]`
-   - The download will be a compressed file (`.zip` or `.tar.gz`)
+   - **Google Drive Link**: ``
+   - The download will be a compressed file (`.zip`)
 
 2. **Extract and place the model**:
    ```bash
