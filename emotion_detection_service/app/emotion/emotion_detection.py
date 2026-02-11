@@ -1,10 +1,12 @@
 import torch
 import numpy as np
+import os
 from transformers import DistilBertTokenizerFast, DistilBertForSequenceClassification
 
 class EmotionDetection():
 
-    model_path = '/Users/hasithawelikannage/Documents/GitHub/Emotion_Aware_Journaling_Web_Application/emotion_detection_service/emotion_model'
+    # Use relative path to model directory
+    model_path = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'model')
     max_length = 512
     chunk_overlap = 50
     default_threshhold = 0.3
