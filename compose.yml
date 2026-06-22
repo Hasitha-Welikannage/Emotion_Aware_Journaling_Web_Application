@@ -1,0 +1,42 @@
+# docker-compose.yml
+services:
+
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 5s
+      retries: 5
+
+  flask-api:
+    build: ./backend
+    environment:
+      DATABASE_URL: ${DATABASE_URL}
+      SECRET_KEY: ${SECRET_KEY}
+      ML_SERVICE_URL: ${ML_SERVICE_URL}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "5050:5000"   # only if you want direct access; remove in prod
+
+  ml-service:
+    build: ./emotion_detection_service
+    ports:
+      - "5001:5001"   # internal only is fine; flask-api reaches it by name
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - flask-api
+
+volumes:
+  postgres_data:

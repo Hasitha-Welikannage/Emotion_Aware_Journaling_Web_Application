@@ -1,14 +1,18 @@
+import os
 import requests
 from requests.exceptions import ConnectionError, Timeout, RequestException
 from ..utils.custom_exceptions import BadRequestError, ServiceUnavailableError
 
+ML_SERVICE_URL = os.environ.get("ML_SERVICE_URL", "http://localhost:5001")
+
 class EmotionAnalysisService:
+
 
     @staticmethod
     def emotion_detection(text: str) -> dict:
 
         try:
-            response = requests.post('http://127.0.0.1:5001/api/v1/emotion_detect/',
+            response = requests.post(f'{ML_SERVICE_URL}/api/v1/emotion_detect/',
                 json= {
                     "text": text,
                     "threshold": 0.01,  # Optional, default 0.3

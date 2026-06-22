@@ -12,6 +12,7 @@ Flask-Login==0.6.3
 Flask-Migrate==4.1.0
 Flask-SQLAlchemy==3.1.1
 fsspec==2025.10.0
+gunicorn==26.0.0
 hf-xet==1.2.0
 huggingface-hub==0.36.0
 idna==3.11

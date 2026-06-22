@@ -1,0 +1,7 @@
+# emotion_detection_service/.dockerignore
+.venv
+.vscode
+.env
+__pycache__/
+*.pyc
+.pytest_cache
